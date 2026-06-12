@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Altın Kupa · Dünya Kupası 2026 Tahmin Ligi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Albert+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-a:#EAEFE0;
+    --bg-b:#E0E7D4;
+    --card:#FBFCF7;
+    --card-soft:#F2F5EA;
+    --ink:#13291B;
+    --green:#1A6040;
+    --green-deep:#0F4A2F;
+    --line:#CBD6BC;
+    --gold:#A87E22;
+    --gold-soft:#C9A958;
+    --muted:#5E7064;
+    --tile:#0C2418;
+    --tile-line:#23503C;
+    --brass:#E6CE8C;
+    --good:#1A7A45;
+    --bad:#A83232;
+    --lock:#8A6D1E;
+    --radius:14px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    font-family:'Albert Sans',system-ui,sans-serif;
+    color:var(--ink);
+    background:repeating-linear-gradient(90deg, var(--bg-a) 0 90px, var(--bg-b) 90px 180px);
+    min-height:100vh;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px 80px;}
+
+  /* ---------- Login ---------- */
+  #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .login-card{
+    width:100%;max-width:400px;background:var(--card);
+    border:1px solid var(--line);border-radius:18px;
+    box-shadow:0 18px 50px rgba(15,48,31,.14);
+    padding:40px 34px 34px;text-align:center;
+  }
+  .login-card .crest{margin-bottom:14px;}
+  .login-card h1{font-size:34px;margin-bottom:4px;}
+  .login-card .rule{margin:14px auto;}
+  .login-card .subtitle{margin-bottom:26px;}
+  .field{text-align:left;margin-bottom:14px;}
+  .field label{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .field input{
+    width:100%;height:46px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card-soft);padding:0 14px;font-family:inherit;font-size:15px;color:var(--ink);
+  }
+  .field input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(168,126,34,.16);}
+  .login-btn{
+    width:100%;height:48px;border:none;border-radius:10px;cursor:pointer;
+    background:linear-gradient(140deg,var(--green),var(--green-deep));
+    color:#fff;font-family:inherit;font-size:15px;font-weight:600;letter-spacing:.04em;margin-top:8px;transition:filter .15s;
+  }
+  .login-btn:hover{filter:brightness(1.08);}
+  .login-error{color:var(--bad);font-size:13px;min-height:18px;margin-top:12px;}
+  .login-note{font-size:12px;color:var(--muted);margin-top:16px;line-height:1.5;}
+
+  /* ---------- Header ---------- */
+  header{text-align:center;padding:46px 0 26px;}
+  .eyebrow{font-size:11px;letter-spacing:.32em;color:var(--muted);text-transform:uppercase;margin-bottom:16px;}
+  .crest{
+    width:56px;height:56px;margin:0 auto 14px;border-radius:50%;
+    border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;
+    font-size:26px;background:radial-gradient(circle at 35% 30%, #FBF1D2, #ECDCAE);
+    box-shadow:0 0 0 5px rgba(168,126,34,.14);
+  }
+  h1{font-family:'Marcellus',serif;font-weight:400;font-size:clamp(38px,7vw,54px);letter-spacing:.04em;color:var(--green-deep);line-height:1.05;}
+  .rule{width:160px;height:1px;margin:16px auto 12px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+  .subtitle{color:var(--muted);font-size:15px;}
+
+  /* ---------- Session ---------- */
+  .session{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:8px 0 4px;}
+  .session .who{
+    display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);
+    border-radius:999px;padding:7px 16px 7px 7px;font-size:15px;font-weight:600;
+  }
+  .avatar{
+    width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:'Marcellus',serif;font-size:15px;color:#fff;background:linear-gradient(140deg,var(--gold-soft),var(--gold));
+  }
+  .admin-tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-soft);border-radius:999px;padding:3px 10px;background:#F6EDD4;}
+  .logout{background:none;border:none;color:var(--muted);font-family:inherit;font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+  .logout:hover{color:var(--ink);}
+  .sync-state{text-align:center;font-size:12px;height:18px;margin-top:8px;color:var(--muted);}
+  .sync-state .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:6px;vertical-align:middle;}
+  .sync-state.live .dot{background:var(--good);}
+  .sync-state.local .dot{background:var(--gold);}
+
+  /* ---------- Tabs ---------- */
+  .tabs{display:flex;justify-content:center;gap:2px;margin:22px 0 28px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .tab{
+    background:none;border:none;color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;
+    letter-spacing:.06em;text-transform:uppercase;padding:12px 18px;cursor:pointer;position:relative;
+  }
+  .tab.active{color:var(--green-deep);}
+  .tab.active::after{content:'';position:absolute;left:16%;right:16%;bottom:-1px;height:2px;background:var(--gold);}
+
+  /* ---------- Filter bar ---------- */
+  .filterbar{
+    position:sticky;top:0;z-index:20;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:0 5px 18px rgba(15,48,31,.08);
+    padding:14px 16px;margin-bottom:22px;
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  }
+  .filterbar .fgroup{display:flex;align-items:center;gap:8px;flex:1;min-width:180px;}
+  .filterbar label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+  .filterbar input, .filterbar select{
+    flex:1;min-width:0;height:38px;border-radius:9px;border:1px solid var(--line);
+    background:var(--card-soft);padding:0 12px;font-family:inherit;font-size:14px;color:var(--ink);
+  }
+  .filterbar input:focus, .filterbar select:focus{outline:none;border-color:var(--gold);}
+  .filterbar .tools{display:flex;align-items:center;gap:8px;}
+  .filterbar .ftbtn{
+    height:38px;padding:0 14px;border-radius:9px;cursor:pointer;
+    background:var(--card-soft);border:1px solid var(--line);color:var(--muted);
+    font-family:inherit;font-size:12px;font-weight:600;white-space:nowrap;transition:color .15s,border-color .15s;
+  }
+  .filterbar .ftbtn:hover{color:var(--gold);border-color:var(--gold);}
+  .filterbar .ftbtn.clear{color:var(--bad);}
+  .filtercount{
+    width:100%;font-size:12px;color:var(--muted);margin-top:2px;
+  }
+  .filtercount b{color:var(--green-deep);}
+
+  .noresult{
+    text-align:center;color:var(--muted);font-size:14px;padding:40px 20px;
+    border:1px dashed var(--line);border-radius:var(--radius);background:var(--card);
+  }
+
+  /* ---------- Day heading ---------- */
+  .dayhead{
+    display:flex;align-items:center;gap:14px;margin:26px 0 14px;
+  }
+  .dayhead:first-child{margin-top:4px;}
+  .dayhead .d{font-family:'Marcellus',serif;font-size:18px;color:var(--green-deep);white-space:nowrap;}
+  .dayhead .ln{flex:1;height:1px;background:var(--line);}
+
+  /* ---------- Match cards ---------- */
+  .match{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:0 5px 18px rgba(15,48,31,.07);padding:20px 20px 16px;margin-bottom:16px;position:relative;
+  }
+  .match.locked{background:var(--card-soft);}
+  .match.finished{background:var(--card-soft);border-color:var(--gold-soft);}
+
+  /* açılır-kapanır başlık şeridi */
+  .card-toggle{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    cursor:pointer;user-select:none;
+  }
+  .card-toggle .left{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0;}
+  .card-toggle .group{color:var(--gold);font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;}
+  .card-toggle .venue{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+  .card-toggle .chev{
+    color:var(--muted);font-size:13px;transition:transform .2s;flex-shrink:0;
+    border:1px solid var(--line);border-radius:7px;width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center;background:var(--card);
+  }
+  .match.collapsed .chev{transform:rotate(-90deg);}
+  .card-toggle:hover .chev{border-color:var(--gold);color:var(--gold);}
+
+  /* kapalı haldeyken gösterilecek özet satırı */
+  .mini{
+    display:none;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;
+  }
+  .match.collapsed .mini{display:flex;}
+  .mini .score{
+    font-family:'DM Mono',monospace;font-size:15px;color:var(--ink);
+    display:flex;align-items:center;gap:8px;
+  }
+  .mini .score .fl{font-size:18px;}
+  .mini .tag{
+    font-size:11px;border-radius:999px;padding:3px 10px;font-weight:600;letter-spacing:.04em;
+  }
+  .mini .tag.done{background:#F6EDD4;border:1px solid var(--gold-soft);color:var(--lock);}
+  .mini .tag.locked{background:var(--card);border:1px solid var(--line);color:var(--green-deep);}
+  .mini .tag.open{background:var(--card);border:1px solid var(--line);color:var(--muted);}
+  .mini .tag.p3{background:#F6EDD4;border:1px solid var(--gold-soft);color:var(--gold);}
+  .mini .tag.p1{background:var(--card);border:1px solid var(--good);color:var(--good);}
+  .mini .tag.p0{background:var(--card);border:1px solid var(--bad);color:var(--bad);}
+
+  /* kapalıyken kartın gövdesini gizle */
+  .card-body{margin-top:4px;}
+  .match.collapsed .card-body{display:none;}
+
+  .match-meta{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;gap:10px;flex-wrap:wrap;}
+  .match-meta .group{color:var(--gold);font-weight:700;}
+  .teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;}
+  .team{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;}
+  .team .flag{font-size:32px;line-height:1;}
+  .team .name{font-weight:600;font-size:14px;}
+
+  .board{display:flex;align-items:center;gap:9px;}
+  .digit{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .digit .tile{
+    width:54px;height:60px;border-radius:10px;background:linear-gradient(180deg,#123626,var(--tile));
+    border:1px solid var(--tile-line);box-shadow:inset 0 2px 8px rgba(0,0,0,.45), 0 2px 6px rgba(15,48,31,.2);
+    display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:28px;color:var(--brass);
+  }
+  .digit .tile.empty{color:#3E5C4B;}
+  .digit .btns{display:flex;gap:6px;}
+  .digit button{
+    width:26px;height:22px;border-radius:6px;border:1px solid var(--line);background:var(--card-soft);
+    color:var(--muted);cursor:pointer;font-size:13px;line-height:1;transition:color .15s,border-color .15s;
+  }
+  .digit button:hover{color:var(--gold);border-color:var(--gold);}
+  .digit button:disabled{opacity:.35;cursor:not-allowed;}
+  .vs{font-family:'Marcellus',serif;color:var(--muted);font-size:14px;letter-spacing:.1em;}
+
+  /* lock/save row */
+  .actions{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap;}
+  .btn-save{
+    height:38px;padding:0 20px;border-radius:9px;border:none;cursor:pointer;
+    background:linear-gradient(140deg,var(--green),var(--green-deep));color:#fff;
+    font-family:inherit;font-size:13px;font-weight:600;transition:filter .15s;
+  }
+  .btn-save:hover{filter:brightness(1.08);}
+  .btn-unlock{
+    height:38px;padding:0 18px;border-radius:9px;cursor:pointer;
+    background:var(--card);border:1px solid var(--gold-soft);color:var(--lock);
+    font-family:inherit;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px;
+  }
+  .btn-unlock:hover{background:#F6EDD4;}
+  .lock-badge{
+    display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--lock);
+  }
+  .btn-unlock:disabled{opacity:.4;cursor:not-allowed;}
+  .finished-note{
+    margin-top:10px;text-align:center;font-size:12px;color:var(--muted);
+  }
+
+  .others{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px;padding-top:13px;border-top:1px dashed var(--line);font-size:12px;color:var(--muted);}
+  .others .pill{background:var(--card-soft);border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--ink);font-family:'DM Mono',monospace;font-size:12px;}
+  .others .pill b{font-family:'Albert Sans',sans-serif;font-weight:600;color:var(--muted);margin-right:6px;}
+  .others .pill.hit{border-color:var(--gold);color:var(--gold);background:#F6EDD4;}
+  .others .pill.waiting{opacity:.55;}
+
+  .mypoints{margin-top:12px;font-size:13px;font-weight:600;text-align:center;}
+  .mypoints.p3{color:var(--gold);}
+  .mypoints.p1{color:var(--good);}
+  .mypoints.p0{color:var(--bad);}
+
+  .result-done{margin-top:14px;display:flex;justify-content:center;}
+  .result-done span{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:13px;color:var(--green-deep);border:1px solid var(--gold-soft);background:#F6EDD4;border-radius:8px;padding:5px 14px;}
+  .result-admin{margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;}
+  .result-admin .label{letter-spacing:.14em;text-transform:uppercase;font-size:10px;margin-bottom:10px;color:var(--gold);font-weight:700;text-align:center;}
+  .result-inner{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;}
+  .result-inner input{width:54px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--card-soft);color:var(--ink);text-align:center;font-family:'DM Mono',monospace;font-size:17px;}
+  .result-inner input:focus{outline:none;border-color:var(--gold);}
+  .result-save{height:38px;padding:0 16px;border-radius:8px;border:none;cursor:pointer;background:linear-gradient(140deg,var(--green),var(--green-deep));color:#fff;font-family:inherit;font-size:13px;font-weight:600;}
+  .result-clear{background:none;border:none;color:var(--muted);font-family:inherit;font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+  .result-msg{font-size:12px;color:var(--good);min-height:16px;margin-top:8px;text-align:center;}
+
+  /* ---------- Leaderboard ---------- */
+  .ladder{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:0 5px 18px rgba(15,48,31,.07);}
+  .ladder-row{display:grid;grid-template-columns:48px 1fr auto auto auto;gap:8px;align-items:center;padding:15px 18px;background:var(--card);}
+  .ladder-row + .ladder-row{border-top:1px solid var(--line);}
+  .ladder-row.first{background:linear-gradient(90deg,#F6EDD4,var(--card) 65%);}
+  .ladder-row.me{box-shadow:inset 3px 0 0 var(--gold);}
+  .rank{font-family:'Marcellus',serif;font-size:21px;color:var(--muted);}
+  .ladder-row.first .rank{color:var(--gold);}
+  .ladder-name{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;}
+  .stat{text-align:right;font-size:11px;color:var(--muted);min-width:56px;}
+  .stat b{display:block;font-family:'DM Mono',monospace;font-size:18px;color:var(--ink);font-weight:500;}
+  .ladder-row.first .stat.pts b{color:var(--gold);}
+
+  /* ---------- Knockout placeholder ---------- */
+  .placeholder{
+    border:1px dashed var(--gold-soft);border-radius:var(--radius);background:var(--card);
+    padding:48px 28px;text-align:center;box-shadow:0 5px 18px rgba(15,48,31,.05);
+  }
+  .placeholder .ico{font-size:42px;margin-bottom:16px;}
+  .placeholder h3{font-family:'Marcellus',serif;font-weight:400;color:var(--green-deep);font-size:24px;margin-bottom:10px;}
+  .placeholder p{color:var(--muted);font-size:14px;line-height:1.6;max-width:440px;margin:0 auto;}
+  .placeholder .bracket{margin-top:22px;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:.1em;}
+
+  /* ---------- Rules ---------- */
+  .rules{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:28px;box-shadow:0 5px 18px rgba(15,48,31,.07);}
+  .rules h3{font-family:'Marcellus',serif;font-weight:400;color:var(--green-deep);font-size:22px;margin-bottom:16px;}
+  .rules ul{list-style:none;}
+  .rules li{padding:12px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:15px;}
+  .rules li:last-child{border-bottom:none;}
+  .rules .pts{font-family:'DM Mono',monospace;color:var(--gold);white-space:nowrap;border:1px solid var(--gold-soft);border-radius:8px;padding:3px 12px;font-size:14px;background:#F6EDD4;}
+  .rules p{margin-top:16px;font-size:13px;color:var(--muted);line-height:1.6;}
+
+  .hidden{display:none !important;}
+  footer{text-align:center;margin-top:48px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);opacity:.7;}
+
+  @media (max-width:560px){
+    .teams{gap:7px;}
+    .digit .tile{width:46px;height:54px;font-size:24px;}
+    .team .flag{font-size:27px;}
+    .team .name{font-size:12px;}
+    .tab{padding:11px 12px;font-size:11px;}
+    .ladder-row{grid-template-columns:32px 1fr auto auto auto;padding:13px 11px;}
+    .stat{min-width:44px;}
+  }
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+
+<!-- ============ GİRİŞ ============ -->
+<div id="login">
+  <div class="login-card">
+    <div class="crest">🏆</div>
+    <h1>Altın Kupa</h1>
+    <div class="rule"></div>
+    <p class="subtitle">Dünya Kupası 2026 Tahmin Ligi</p>
+    <div style="height:22px"></div>
+    <div class="field">
+      <label for="u">Kullanıcı adı</label>
+      <input id="u" type="text" autocomplete="username" placeholder="İsmin">
+    </div>
+    <div class="field">
+      <label for="p">Şifre</label>
+      <input id="p" type="password" autocomplete="current-password" placeholder="••••••••">
+    </div>
+    <button class="login-btn" id="loginBtn">Giriş yap</button>
+    <div class="login-error" id="loginError"></div>
+    <p class="login-note">Şifreni bilmiyorsan ligi kuran arkadaşına sor. 🤫</p>
+  </div>
+</div>
+
+<!-- ============ UYGULAMA ============ -->
+<div class="wrap hidden" id="app">
+  <header>
+    <div class="eyebrow">FIFA Dünya Kupası 2026 &nbsp;·&nbsp; ABD &bull; Kanada &bull; Meksika</div>
+    <div class="crest">🏆</div>
+    <h1>Altın Kupa</h1>
+    <div class="rule"></div>
+    <p class="subtitle">Kafadarların Dünya Kupası tahmin ligi</p>
+  </header>
+
+  <div class="session" id="session"></div>
+  <div class="sync-state local" id="syncState"><span class="dot"></span><span id="syncText">Yerel mod</span></div>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="groups">Grup Maçları</button>
+    <button class="tab" data-tab="knockout">Eleme Turları</button>
+    <button class="tab" data-tab="ladder">Sıralama</button>
+    <button class="tab" data-tab="rules">Kurallar</button>
+  </nav>
+
+  <section id="tab-groups">
+    <div class="filterbar">
+      <div class="fgroup">
+        <label for="fDate">Tarih</label>
+        <select id="fDate"><option value="">Tüm günler</option></select>
+      </div>
+      <div class="fgroup">
+        <label for="fTeam">Ülke</label>
+        <input id="fTeam" type="text" placeholder="ör. Türkiye, Brezilya…" autocomplete="off">
+      </div>
+      <div class="tools">
+        <button class="ftbtn" id="expandAll">Hepsini aç</button>
+        <button class="ftbtn" id="collapseAll">Hepsini kapat</button>
+        <button class="ftbtn clear hidden" id="clearFilter">Temizle</button>
+      </div>
+      <div class="filtercount hidden" id="filterCount"></div>
+    </div>
+    <div id="matchList"></div>
+  </section>
+
+  <section id="tab-knockout" class="hidden">
+    <div class="placeholder">
+      <div class="ico">🔒</div>
+      <h3>Eleme turları henüz açılmadı</h3>
+      <p>Son 32, son 16, çeyrek final, yarı final ve final eşleşmeleri grup aşaması bittiğinde belli olacak. Gruplar tamamlanınca bu sekmeyi tahmine açacağız.</p>
+      <div class="bracket">SON 32 · SON 16 · ÇEYREK · YARI · FİNAL</div>
+    </div>
+  </section>
+
+  <section id="tab-ladder" class="hidden"></section>
+
+  <section id="tab-rules" class="hidden">
+    <div class="rules">
+      <h3>Puanlama</h3>
+      <ul>
+        <li><span>Tam skor tutturma <span style="color:var(--muted)">(ör. 2–1 dedin, 2–1 bitti)</span></span><span class="pts">3 puan</span></li>
+        <li><span>Doğru sonuç <span style="color:var(--muted)">(galibiyet / beraberlik / mağlubiyet)</span></span><span class="pts">1 puan</span></li>
+        <li><span>Yanlış tahmin</span><span class="pts">0 puan</span></li>
+      </ul>
+      <p>Tahminini girdikten sonra <b>Kaydet ve kilitle</b> dersin; tahminin sabitlenir ve kart küçülür. Fikrini değiştirirsen <b>Kilidi aç</b> ile tekrar düzenleyebilirsin — ama yalnızca maç başlamadan önce. Lig yöneticisi (Adıgüzel) bir maçın sonucunu girdiği an o maç <b>bitmiş</b> sayılır: kart otomatik küçülür ve artık hiç kimse o maçtaki tahminini değiştiremez. Yönetici sonucu silerse maç yeniden açılır. Üstteki çubuktan tarihe veya ülke adına göre maçları süzebilir, kartları topluca açıp kapatabilirsin.</p>
+    </div>
+  </section>
+
+  <footer>Altın Kupa · 2026</footer>
+</div>
+
+<script type="module">
+/* ============================================================
+   FIREBASE BAĞLANTISI
+   Aşağıdaki firebaseConfig'i kendi projenin değerleriyle doldur.
+   Doldurmadan bırakırsan site "Yerel mod"da çalışır (test için).
+   Doldurduğun an otomatik canlı senkron devreye girer.
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyDVN4vyB0o8__0-IrdlOlm5mVvG8EGXs4Q",
+  authDomain: "worldcuptahmin.firebaseapp.com",
+  projectId: "worldcuptahmin",
+  storageBucket: "worldcuptahmin.firebasestorage.app",
+  messagingSenderId: "97782512619",
+  appId: "1:97782512619:web:e4b6c753a121c1b08f77ae"
+};
+
+let db = null, fb = null;
+const FIREBASE_ON = !!firebaseConfig.projectId;
+
+if (FIREBASE_ON) {
+  const appMod = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+  const fsMod  = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+  const app = appMod.initializeApp(firebaseConfig);
+  db = fsMod.getFirestore(app);
+  fb = fsMod;
+}
+
+/* ================= KULLANICILAR ================= */
+const USERS = [
+  {name:"Akbar",    pass:"penalti26"},
+  {name:"Adıgüzel", pass:"kaptan07", admin:true},
+  {name:"Ajdar",    pass:"ofsayt54"},
+  {name:"Hasan",    pass:"depar90"},
+  {name:"İbrahim",  pass:"sutcek18"},
+  {name:"Nihad",    pass:"korner63"},
+  {name:"Reşad",    pass:"asist41"},
+  {name:"Röyal",    pass:"golcu88"},
+  {name:"Elmir",    pass:"defans29"},
+  {name:"Nicat",    pass:"kaleci35"},
+  {name:"Ali",      pass:"orta10"},
+  {name:"Ehed",     pass:"forvet72"},
+  {name:"Sadiq",    pass:"taraftar26"},
+];
+const PLAYERS = USERS.map(u => u.name);
+
+/* ================= MAÇLAR (PDF'ten tüm 72 grup maçı) ================= */
+const F = {
+  MEX:"🇲🇽",RSA:"🇿🇦",KOR:"🇰🇷",CZE:"🇨🇿",CAN:"🇨🇦",BIH:"🇧🇦",QAT:"🇶🇦",SUI:"🇨🇭",
+  BRA:"🇧🇷",MAR:"🇲🇦",HAI:"🇭🇹",SCO:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",USA:"🇺🇸",PAR:"🇵🇾",AUS:"🇦🇺",TUR:"🇹🇷",
+  GER:"🇩🇪",CUR:"🇨🇼",CIV:"🇨🇮",ECU:"🇪🇨",NED:"🇳🇱",JPN:"🇯🇵",SWE:"🇸🇪",TUN:"🇹🇳",
+  BEL:"🇧🇪",EGY:"🇪🇬",IRN:"🇮🇷",NZL:"🇳🇿",ESP:"🇪🇸",CPV:"🇨🇻",KSA:"🇸🇦",URU:"🇺🇾",
+  FRA:"🇫🇷",SEN:"🇸🇳",IRQ:"🇮🇶",NOR:"🇳🇴",ARG:"🇦🇷",ALG:"🇩🇿",AUT:"🇦🇹",JOR:"🇯🇴",
+  POR:"🇵🇹",COD:"🇨🇩",UZB:"🇺🇿",COL:"🇨🇴",ENG:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",CRO:"🇭🇷",GHA:"🇬🇭",PAN:"🇵🇦"
+};
+const NM = {
+  MEX:"Meksika",RSA:"Güney Afrika",KOR:"Güney Kore",CZE:"Çekya",CAN:"Kanada",BIH:"Bosna Hersek",QAT:"Katar",SUI:"İsviçre",
+  BRA:"Brezilya",MAR:"Fas",HAI:"Haiti",SCO:"İskoçya",USA:"ABD",PAR:"Paraguay",AUS:"Avustralya",TUR:"Türkiye",
+  GER:"Almanya",CUR:"Curaçao",CIV:"Fildişi Sahili",ECU:"Ekvador",NED:"Hollanda",JPN:"Japonya",SWE:"İsveç",TUN:"Tunus",
+  BEL:"Belçika",EGY:"Mısır",IRN:"İran",NZL:"Yeni Zelanda",ESP:"İspanya",CPV:"Cabo Verde",KSA:"S. Arabistan",URU:"Uruguay",
+  FRA:"Fransa",SEN:"Senegal",IRQ:"Irak",NOR:"Norveç",ARG:"Arjantin",ALG:"Cezayir",AUT:"Avusturya",JOR:"Ürdün",
+  POR:"Portekiz",COD:"DR Kongo",UZB:"Özbekistan",COL:"Kolombiya",ENG:"İngiltere",CRO:"Hırvatistan",GHA:"Gana",PAN:"Panama"
+};
+function team(code){ return {n:NM[code], f:F[code]}; }
+
+// Maçlar gün gün gruplanmış. result varsa oynanmış demektir.
+const SCHEDULE = [
+  {day:"Perşembe, 11 Haziran", matches:[
+    {id:"m1", g:"A", h:"MEX", a:"RSA", v:"Mexico City"},
+    {id:"m2", g:"A", h:"KOR", a:"CZE", v:"Guadalajara"},
+  ]},
+  {day:"Cuma, 12 Haziran", matches:[
+    {id:"m3", g:"B", h:"CAN", a:"BIH", v:"Toronto"},
+    {id:"m4", g:"D", h:"USA", a:"PAR", v:"Los Angeles"},
+  ]},
+  {day:"Cumartesi, 13 Haziran", matches:[
+    {id:"m5", g:"C", h:"HAI", a:"SCO", v:"Boston"},
+    {id:"m6", g:"D", h:"AUS", a:"TUR", v:"Vancouver"},
+    {id:"m7", g:"C", h:"BRA", a:"MAR", v:"New York New Jersey"},
+    {id:"m8", g:"B", h:"QAT", a:"SUI", v:"San Francisco"},
+  ]},
+  {day:"Pazar, 14 Haziran", matches:[
+    {id:"m9",  g:"E", h:"CIV", a:"ECU", v:"Philadelphia"},
+    {id:"m10", g:"E", h:"GER", a:"CUR", v:"Houston"},
+    {id:"m11", g:"F", h:"NED", a:"JPN", v:"Dallas"},
+    {id:"m12", g:"F", h:"SWE", a:"TUN", v:"Monterrey"},
+  ]},
+  {day:"Pazartesi, 15 Haziran", matches:[
+    {id:"m13", g:"H", h:"KSA", a:"URU", v:"Miami"},
+    {id:"m14", g:"H", h:"ESP", a:"CPV", v:"Atlanta"},
+    {id:"m15", g:"G", h:"IRN", a:"NZL", v:"Los Angeles"},
+    {id:"m16", g:"G", h:"BEL", a:"EGY", v:"Seattle"},
+  ]},
+  {day:"Salı, 16 Haziran", matches:[
+    {id:"m17", g:"I", h:"FRA", a:"SEN", v:"New York New Jersey"},
+    {id:"m18", g:"I", h:"IRQ", a:"NOR", v:"Boston"},
+    {id:"m19", g:"J", h:"ARG", a:"ALG", v:"Kansas City"},
+    {id:"m20", g:"J", h:"AUT", a:"JOR", v:"San Francisco"},
+  ]},
+  {day:"Çarşamba, 17 Haziran", matches:[
+    {id:"m21", g:"L", h:"GHA", a:"PAN", v:"Toronto"},
+    {id:"m22", g:"L", h:"ENG", a:"CRO", v:"Dallas"},
+    {id:"m23", g:"K", h:"POR", a:"COD", v:"Houston"},
+    {id:"m24", g:"K", h:"UZB", a:"COL", v:"Mexico City"},
+  ]},
+  {day:"Perşembe, 18 Haziran", matches:[
+    {id:"m25", g:"A", h:"CZE", a:"RSA", v:"Atlanta"},
+    {id:"m26", g:"B", h:"SUI", a:"BIH", v:"Los Angeles"},
+    {id:"m27", g:"B", h:"CAN", a:"QAT", v:"Vancouver"},
+    {id:"m28", g:"A", h:"MEX", a:"KOR", v:"Guadalajara"},
+  ]},
+  {day:"Cuma, 19 Haziran", matches:[
+    {id:"m29", g:"C", h:"BRA", a:"HAI", v:"Philadelphia"},
+    {id:"m30", g:"C", h:"SCO", a:"MAR", v:"Boston"},
+    {id:"m31", g:"D", h:"TUR", a:"PAR", v:"San Francisco"},
+    {id:"m32", g:"D", h:"USA", a:"AUS", v:"Seattle"},
+  ]},
+  {day:"Cumartesi, 20 Haziran", matches:[
+    {id:"m33", g:"E", h:"GER", a:"CIV", v:"Toronto"},
+    {id:"m34", g:"E", h:"ECU", a:"CUR", v:"Kansas City"},
+    {id:"m35", g:"F", h:"NED", a:"SWE", v:"Houston"},
+    {id:"m36", g:"F", h:"TUN", a:"JPN", v:"Monterrey"},
+  ]},
+  {day:"Pazar, 21 Haziran", matches:[
+    {id:"m37", g:"H", h:"URU", a:"CPV", v:"Miami"},
+    {id:"m38", g:"H", h:"ESP", a:"KSA", v:"Atlanta"},
+    {id:"m39", g:"G", h:"BEL", a:"IRN", v:"Los Angeles"},
+    {id:"m40", g:"G", h:"NZL", a:"EGY", v:"Vancouver"},
+  ]},
+  {day:"Pazartesi, 22 Haziran", matches:[
+    {id:"m41", g:"I", h:"NOR", a:"SEN", v:"New York New Jersey"},
+    {id:"m42", g:"I", h:"FRA", a:"IRQ", v:"Philadelphia"},
+    {id:"m43", g:"J", h:"ARG", a:"AUT", v:"Dallas"},
+    {id:"m44", g:"J", h:"JOR", a:"ALG", v:"San Francisco"},
+  ]},
+  {day:"Salı, 23 Haziran", matches:[
+    {id:"m45", g:"L", h:"ENG", a:"GHA", v:"Boston"},
+    {id:"m46", g:"L", h:"PAN", a:"CRO", v:"Toronto"},
+    {id:"m47", g:"K", h:"POR", a:"UZB", v:"Houston"},
+    {id:"m48", g:"K", h:"COL", a:"COD", v:"Guadalajara"},
+  ]},
+  {day:"Çarşamba, 24 Haziran", matches:[
+    {id:"m49", g:"C", h:"SCO", a:"BRA", v:"Miami"},
+    {id:"m50", g:"C", h:"MAR", a:"HAI", v:"Atlanta"},
+    {id:"m51", g:"B", h:"SUI", a:"CAN", v:"Vancouver"},
+    {id:"m52", g:"B", h:"BIH", a:"QAT", v:"Seattle"},
+    {id:"m53", g:"A", h:"CZE", a:"MEX", v:"Mexico City"},
+    {id:"m54", g:"A", h:"RSA", a:"KOR", v:"Monterrey"},
+  ]},
+  {day:"Perşembe, 25 Haziran", matches:[
+    {id:"m55", g:"E", h:"CUR", a:"CIV", v:"Philadelphia"},
+    {id:"m56", g:"E", h:"ECU", a:"GER", v:"New York New Jersey"},
+    {id:"m57", g:"F", h:"JPN", a:"SWE", v:"Dallas"},
+    {id:"m58", g:"F", h:"TUN", a:"NED", v:"Kansas City"},
+    {id:"m59", g:"D", h:"TUR", a:"USA", v:"Los Angeles"},
+    {id:"m60", g:"D", h:"PAR", a:"AUS", v:"San Francisco"},
+  ]},
+  {day:"Cuma, 26 Haziran", matches:[
+    {id:"m61", g:"I", h:"NOR", a:"FRA", v:"Boston"},
+    {id:"m62", g:"I", h:"SEN", a:"IRQ", v:"Toronto"},
+    {id:"m63", g:"G", h:"EGY", a:"IRN", v:"Seattle"},
+    {id:"m64", g:"G", h:"NZL", a:"BEL", v:"Vancouver"},
+    {id:"m65", g:"H", h:"CPV", a:"KSA", v:"Houston"},
+    {id:"m66", g:"H", h:"URU", a:"ESP", v:"Guadalajara"},
+  ]},
+  {day:"Cumartesi, 27 Haziran", matches:[
+    {id:"m67", g:"L", h:"PAN", a:"ENG", v:"New York New Jersey"},
+    {id:"m68", g:"L", h:"CRO", a:"GHA", v:"Philadelphia"},
+    {id:"m69", g:"J", h:"ALG", a:"AUT", v:"Kansas City"},
+    {id:"m70", g:"J", h:"JOR", a:"ARG", v:"Dallas"},
+    {id:"m71", g:"K", h:"COL", a:"POR", v:"Miami"},
+    {id:"m72", g:"K", h:"COD", a:"UZB", v:"Atlanta"},
+  ]},
+];
+
+// düz maç listesi
+const MATCHES = [];
+SCHEDULE.forEach(d => d.matches.forEach(m => {
+  MATCHES.push({id:m.id, g:m.g+" Grubu", date:d.day, venue:m.v, h:team(m.h), a:team(m.a)});
+}));
+
+/* ================= TOHUM (SEED) VERİ =================
+   Arkadaşların daha önce yaptığı tahminler + oynanmış 2 maçın sonucu.
+   Bu veri SADECE veritabanı/depolama tamamen boşken bir kez yüklenir.
+   Yüklendikten sonra normal veridir: yönetici sonucu silebilir,
+   herkes (maç bitmemişse) tahminini değiştirebilir. Geri gelmez. */
+const SEED_RESULTS = {
+  m1:[2,0],   // Meksika 2-0 Güney Afrika
+  m2:[2,1],   // Güney Kore 2-1 Çekya
+};
+// kısa yazım: oyuncu -> { maçId:[h,a] }  (hepsi kilitli kabul edilir)
+const SEED_PICKS = {
+  "Ajdar":   {m1:[3,1], m2:[1,2]},
+  "Hasan":   {m1:[3,1], m2:[2,3]},
+  "Ehed":    {m1:[2,1], m2:[2,2]},
+  "Ali":     {m1:[1,1], m2:[2,1]},
+  "Nihad":   {m1:[1,0], m2:[2,1]},
+  "Reşad":   {m1:[3,0], m2:[2,1]},
+  "Adıgüzel":{m1:[2,0], m2:[1,1]},
+  "Sadiq":   {m1:[3,1], m2:[1,1]},
+  "Röyal":   {m1:[2,0], m2:[1,1]},
+  "Nicat":   {m1:[2,1], m2:[3,1]},
+};
+function buildSeedState(){
+  const preds = {};
+  PLAYERS.forEach(p => preds[p] = {});
+  for(const [p,picks] of Object.entries(SEED_PICKS)){
+    if(!preds[p]) preds[p]={};
+    for(const [mid,s] of Object.entries(picks)){
+      preds[p][mid] = {s, locked:true};
+    }
+  }
+  return { predictions:preds, results:Object.assign({}, SEED_RESULTS) };
+}
+
+/* ================= DURUM ================= */
+// predictions[player][matchId] = {s:[h,a], locked:bool}
+// results[matchId] = [h,a]
+let state = { predictions:{}, results:{} };
+PLAYERS.forEach(p => state.predictions[p] = {});
+let currentUser = null;
+const STORE_KEY = "altinkupa-v4";
+
+function norm(s){
+  return (s||"").trim().toLowerCase()
+    .replaceAll("ı","i").replaceAll("i̇","i").replaceAll("ş","s")
+    .replaceAll("ğ","g").replaceAll("ü","u").replaceAll("ö","o").replaceAll("ç","c");
+}
+
+function applyData(d){
+  state.predictions = d.predictions || {};
+  state.results = d.results || {};
+  PLAYERS.forEach(p => state.predictions[p] = state.predictions[p] || {});
+}
+
+/* ---------- kalıcılık: Firebase veya yerel ---------- */
+async function loadState(){
+  if (FIREBASE_ON){
+    const ref = fb.doc(db,"league","altinkupa");
+    // ilk yükleme: boşsa tohum veriyi bir kez yaz
+    try{
+      const first = await fb.getDoc(ref);
+      if(!first.exists()){
+        const seed = buildSeedState();
+        await fb.setDoc(ref, seed);
+      }
+    }catch(e){ console.error(e); }
+    // canlı dinleme
+    fb.onSnapshot(ref, snap=>{
+      if (snap.exists()){
+        applyData(snap.data());
+        if (currentUser){ renderGroups(); renderLadder(); }
+      }
+    });
+    setSync("live","Canlı · senkronize");
+  } else {
+    let loaded=false;
+    try{
+      const res = await window.storage.get(STORE_KEY, true);
+      if (res && res.value){ applyData(JSON.parse(res.value)); loaded=true; }
+    }catch(e){}
+    if(!loaded){ applyData(buildSeedState()); await persist(); }
+    setSync("local","Yerel mod · (Firebase bağlanınca canlı olur)");
+  }
+}
+async function persist(){
+  const payload = { predictions: state.predictions, results: state.results };
+  if (FIREBASE_ON){
+    try{ await fb.setDoc(fb.doc(db,"league","altinkupa"), payload); }catch(e){ console.error(e); }
+  } else {
+    try{ await window.storage.set(STORE_KEY, JSON.stringify(payload), true); }catch(e){}
+  }
+}
+function setSync(cls,txt){
+  const el = document.getElementById("syncState");
+  el.className = "sync-state " + cls;
+  document.getElementById("syncText").textContent = txt;
+}
+
+/* ---------- puanlama ---------- */
+function predScore(p,m){ const e=state.predictions[p][m.id]; return e?e.s:null; }
+function pointsFor(pred,res){
+  if(!pred||!res||pred[0]==null||pred[1]==null) return null;
+  if(pred[0]===res[0]&&pred[1]===res[1]) return 3;
+  const sg=x=>x[0]>x[1]?1:(x[0]<x[1]?-1:0);
+  return sg(pred)===sg(res)?1:0;
+}
+function totals(){
+  return PLAYERS.map(p=>{
+    let pts=0,exact=0,outcome=0;
+    MATCHES.forEach(m=>{
+      const sc=pointsFor(predScore(p,m), state.results[m.id]);
+      if(sc===3){pts+=3;exact++;} else if(sc===1){pts+=1;outcome++;}
+    });
+    return {p,pts,exact,outcome};
+  }).sort((a,b)=> b.pts-a.pts || b.exact-a.exact || a.p.localeCompare(b.p,"tr"));
+}
+
+/* ---------- giriş ---------- */
+function tryLogin(){
+  const u=document.getElementById("u").value;
+  const p=document.getElementById("p").value.trim();
+  const err=document.getElementById("loginError");
+  const found=USERS.find(x=>norm(x.name)===norm(u));
+  if(!found||found.pass!==p){ err.textContent="Kullanıcı adı veya şifre hatalı."; return; }
+  err.textContent="";
+  currentUser=found;
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  renderSession(); renderGroups(); renderLadder();
+}
+function logout(){
+  currentUser=null;
+  document.getElementById("p").value="";
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("login").classList.remove("hidden");
+}
+document.getElementById("loginBtn").onclick=tryLogin;
+document.getElementById("p").addEventListener("keydown",e=>{if(e.key==="Enter")tryLogin();});
+document.getElementById("u").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("p").focus();});
+
+/* ---------- oturum ---------- */
+function renderSession(){
+  const box=document.getElementById("session");
+  box.innerHTML=`
+    <span class="who"><span class="avatar">${currentUser.name[0]}</span>${currentUser.name}</span>
+    ${currentUser.admin?'<span class="admin-tag">Lig Yöneticisi</span>':''}
+    <button class="logout" id="logoutBtn">Çıkış yap</button>`;
+  document.getElementById("logoutBtn").onclick=logout;
+}
+
+/* ---------- maç kartı ---------- */
+function digitHTML(side,val,disabled){
+  const shown=(val==null)?"–":val;
+  return `<div class="digit">
+    <div class="tile ${val==null?'empty':''}">${shown}</div>
+    <div class="btns">
+      <button data-side="${side}" data-d="-1" ${disabled?'disabled':''}>−</button>
+      <button data-side="${side}" data-d="1" ${disabled?'disabled':''}>+</button>
+    </div></div>`;
+}
+
+/* Kullanıcının elle aç/kapattığı kartlar burada tutulur (oturum içi).
+   Değer: true=açık, false=kapalı. Yoksa otomatik kurala bakılır. */
+const userToggled = {};
+/* Filtre durumu */
+const filter = { date:"", team:"" };
+
+// bitmiş = admin sonucu girmiş
+function isFinished(mId){ return !!state.results[mId]; }
+
+// bir maç filtreye uyuyor mu
+function matchPasses(day, mm){
+  if(filter.date && day.day !== filter.date) return false;
+  if(filter.team){
+    const q=norm(filter.team);
+    const hn=norm(NM[mm.h]), an=norm(NM[mm.a]);
+    if(!hn.includes(q) && !an.includes(q)) return false;
+  }
+  return true;
+}
+
+// kart açık mı kapalı mı? (elle ayar > otomatik kural)
+function isOpen(mId){
+  if(mId in userToggled) return userToggled[mId];
+  return !isFinished(mId); // bitmişse otomatik kapalı, değilse açık
+}
+
+function buildCard(day, mm){
+  const me=currentUser.name;
+  const m={id:mm.id, g:mm.g+" Grubu", venue:mm.v, h:team(mm.h), a:team(mm.a)};
+  const entry=state.predictions[me][m.id] || {s:[null,null],locked:false};
+  const my=entry.s;
+  const res=state.results[m.id];
+  const finished=isFinished(m.id);
+  // bitmiş maçta kimse skor değiştiremez → fiilen kilitli gibi davran
+  const editLocked = entry.locked || finished;
+  const open=isOpen(m.id);
+
+  const card=document.createElement("div");
+  card.className="match"+(entry.locked?" locked":"")+(finished?" finished":"")+(open?"":" collapsed");
+
+  // --- mini özet (kapalıyken görünür) ---
+  let miniTag;
+  if(finished){
+    const sc=pointsFor(my,res);
+    if(sc===3) miniTag=`<span class="tag p3">★ +3</span>`;
+    else if(sc===1) miniTag=`<span class="tag p1">✓ +1</span>`;
+    else if(sc===0) miniTag=`<span class="tag p0">✕ 0</span>`;
+    else miniTag=`<span class="tag done">Bitti</span>`;
+  } else if(entry.locked){
+    miniTag=`<span class="tag locked">🔒 ${my[0]}–${my[1]}</span>`;
+  } else {
+    miniTag=`<span class="tag open">Tahmin bekliyor</span>`;
+  }
+  const miniScore = finished
+    ? `<span class="score"><span class="fl">${m.h.f}</span> ${res[0]}–${res[1]} <span class="fl">${m.a.f}</span></span>`
+    : `<span class="score"><span class="fl">${m.h.f}</span> ${m.h.n} – ${m.a.n} <span class="fl">${m.a.f}</span></span>`;
+
+  // --- diğer tahminler ---
+  const othersHTML=PLAYERS.filter(p=>p!==me).map(p=>{
+    const e=state.predictions[p][m.id];
+    const has=e&&e.locked&&e.s[0]!=null;
+    const txt=has?`${e.s[0]}–${e.s[1]}`:"·";
+    const hit=res&&has&&e.s[0]===res[0]&&e.s[1]===res[1];
+    return `<span class="pill ${hit?'hit':''} ${has?'':'waiting'}"><b>${p}</b>${txt}</span>`;
+  }).join("");
+
+  let myPts="";
+  if(res){
+    const sc=pointsFor(my,res);
+    if(sc===3) myPts=`<div class="mypoints p3">★ Tam skor! +3 puan</div>`;
+    else if(sc===1) myPts=`<div class="mypoints p1">✓ Doğru sonuç · +1 puan</div>`;
+    else if(sc===0) myPts=`<div class="mypoints p0">✕ Tutmadı · 0 puan</div>`;
+  }
+
+  // --- alt aksiyon ---
+  let actions;
+  if(finished){
+    actions=`<div class="actions"><span class="lock-badge">🏁 Maç bitti — tahminler kilitli</span></div>`;
+  } else if(entry.locked){
+    actions=`<div class="actions">
+      <span class="lock-badge">🔒 Tahmin kilitli</span>
+      <button class="btn-unlock">🔓 Kilidi aç</button>
+    </div>`;
+  } else {
+    actions=`<div class="actions"><button class="btn-save">Kaydet ve kilitle</button></div>`;
+  }
+
+  const resultBadge=res?`<div class="result-done"><span>⏱ Maç bitti: ${res[0]}–${res[1]}</span></div>`:"";
+  const adminHTML=currentUser.admin?`
+    <div class="result-admin">
+      <div class="label">Maç sonucunu işle (yönetici)</div>
+      <div class="result-inner">
+        <input type="number" min="0" max="20" inputmode="numeric" data-res="h" value="${res?res[0]:''}" placeholder="–">
+        <span class="vs">·</span>
+        <input type="number" min="0" max="20" inputmode="numeric" data-res="a" value="${res?res[1]:''}" placeholder="–">
+        <button class="result-save">Sonucu kaydet</button>
+        ${res?'<button class="result-clear">Sonucu sil</button>':''}
+      </div>
+      <div class="result-msg"></div>
+    </div>`:"";
+
+  card.innerHTML=`
+    <div class="card-toggle">
+      <div class="left">
+        <span class="group">${m.g}</span>
+        <span class="venue">${day.day} · ${m.venue}</span>
+      </div>
+      <span class="chev">▾</span>
+    </div>
+    <div class="mini">${miniScore}${miniTag}</div>
+    <div class="card-body">
+      <div class="teams" style="margin-top:14px">
+        <div class="team"><span class="flag">${m.h.f}</span><span class="name">${m.h.n}</span></div>
+        <div class="board">${digitHTML("h",my[0],editLocked)}<span class="vs">·</span>${digitHTML("a",my[1],editLocked)}</div>
+        <div class="team"><span class="flag">${m.a.f}</span><span class="name">${m.a.n}</span></div>
+      </div>
+      ${actions}
+      ${resultBadge}${myPts}
+      <div class="others"><span>Diğer tahminler:</span>${othersHTML}</div>
+      ${adminHTML}
+    </div>`;
+
+  // aç/kapa
+  card.querySelector(".card-toggle").onclick=()=>{
+    userToggled[m.id] = !isOpen(m.id);
+    card.classList.toggle("collapsed", !userToggled[m.id]);
+  };
+
+  // skor +/- (sadece düzenlenebilirken)
+  card.querySelectorAll(".digit button").forEach(btn=>{
+    btn.onclick=()=>{
+      if(editLocked) return;
+      const cur=(state.predictions[me][m.id]||{s:[null,null]}).s;
+      const i=btn.dataset.side==="h"?0:1;
+      const d=parseInt(btn.dataset.d,10);
+      let v=cur[i]==null?0:cur[i]+d; v=Math.max(0,Math.min(20,v));
+      const next=[cur[0]==null?0:cur[0],cur[1]==null?0:cur[1]]; next[i]=v;
+      state.predictions[me][m.id]={s:next,locked:false};
+      userToggled[m.id]=true; // açık kalsın
+      renderGroups();
+    };
+  });
+  // kaydet + kilitle
+  const saveBtn=card.querySelector(".btn-save");
+  if(saveBtn) saveBtn.onclick=()=>{
+    const cur=state.predictions[me][m.id];
+    const s = (cur&&cur.s[0]!=null) ? cur.s : [cur?cur.s[0]??0:0, cur?cur.s[1]??0:0];
+    state.predictions[me][m.id]={s,locked:true};
+    userToggled[m.id]=false; // kaydedince kapansın
+    persist(); renderGroups(); renderLadder();
+  };
+  // kilidi aç
+  const unlockBtn=card.querySelector(".btn-unlock");
+  if(unlockBtn) unlockBtn.onclick=()=>{
+    const cur=state.predictions[me][m.id];
+    state.predictions[me][m.id]={s:cur.s,locked:false};
+    userToggled[m.id]=true; // açık kalsın
+    persist(); renderGroups();
+  };
+  // yönetici sonuç
+  const rs=card.querySelector(".result-save");
+  if(rs) rs.onclick=()=>{
+    const h=card.querySelector('input[data-res="h"]').value;
+    const a=card.querySelector('input[data-res="a"]').value;
+    const msg=card.querySelector(".result-msg");
+    if(h===""||a===""){ msg.textContent="İki skoru da gir, sonra kaydet."; msg.style.color="var(--bad)"; return; }
+    state.results[m.id]=[Math.max(0,parseInt(h,10)||0),Math.max(0,parseInt(a,10)||0)];
+    delete userToggled[m.id]; // bitti → otomatik kapanma kuralına dön
+    persist(); renderGroups(); renderLadder();
+  };
+  const rc=card.querySelector(".result-clear");
+  if(rc) rc.onclick=()=>{
+    delete state.results[m.id];
+    delete userToggled[m.id]; // tekrar açık kurala dön
+    persist(); renderGroups(); renderLadder();
+  };
+
+  return card;
+}
+
+function renderGroups(){
+  const box=document.getElementById("matchList");
+  box.innerHTML="";
+  const filtering = !!(filter.date || filter.team);
+  let shown=0;
+
+  SCHEDULE.forEach(day=>{
+    const dayMatches = day.matches.filter(mm=>matchPasses(day,mm));
+    if(dayMatches.length===0) return;
+    const head=document.createElement("div");
+    head.className="dayhead";
+    head.innerHTML=`<span class="d">${day.day}</span><span class="ln"></span>`;
+    box.appendChild(head);
+    dayMatches.forEach(mm=>{ box.appendChild(buildCard(day,mm)); shown++; });
+  });
+
+  if(shown===0){
+    box.innerHTML=`<div class="noresult">Bu filtreye uyan maç bulunamadı. Filtreyi temizleyip tekrar dene.</div>`;
+  }
+
+  // filtre sayacı
+  const fc=document.getElementById("filterCount");
+  const clr=document.getElementById("clearFilter");
+  if(filtering){
+    fc.classList.remove("hidden"); clr.classList.remove("hidden");
+    fc.innerHTML=`<b>${shown}</b> maç gösteriliyor${filter.team?` · "${filter.team}"`:""}${filter.date?` · ${filter.date}`:""}`;
+  } else {
+    fc.classList.add("hidden"); clr.classList.add("hidden");
+  }
+}
+
+/* ---------- sıralama ---------- */
+function renderLadder(){
+  const box=document.getElementById("tab-ladder");
+  const rows=totals();
+  box.innerHTML=`<div class="ladder">`+rows.map((r,i)=>`
+    <div class="ladder-row ${i===0&&r.pts>0?'first':''} ${r.p===currentUser.name?'me':''}">
+      <span class="rank">${i+1}</span>
+      <span class="ladder-name"><span class="avatar">${r.p[0]}</span>${r.p}</span>
+      <span class="stat">Tam skor<b>${r.exact}</b></span>
+      <span class="stat">Doğru sonuç<b>${r.outcome}</b></span>
+      <span class="stat pts">Puan<b>${r.pts}</b></span>
+    </div>`).join("")+`</div>`;
+}
+
+/* ---------- sekmeler ---------- */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    ["groups","knockout","ladder","rules"].forEach(n=>{
+      document.getElementById("tab-"+n).classList.toggle("hidden", n!==t.dataset.tab);
+    });
+  };
+});
+
+/* ---------- filtre çubuğu ---------- */
+function initFilterBar(){
+  // tarih seçeneklerini doldur
+  const sel=document.getElementById("fDate");
+  if(sel.options.length<=1){
+    SCHEDULE.forEach(d=>{
+      const o=document.createElement("option");
+      o.value=d.day; o.textContent=d.day; sel.appendChild(o);
+    });
+  }
+  sel.onchange=()=>{ filter.date=sel.value; renderGroups(); };
+
+  const team=document.getElementById("fTeam");
+  let deb;
+  team.oninput=()=>{ clearTimeout(deb); deb=setTimeout(()=>{ filter.team=team.value.trim(); renderGroups(); },180); };
+
+  document.getElementById("expandAll").onclick=()=>{
+    SCHEDULE.forEach(d=>d.matches.forEach(mm=>userToggled[mm.id]=true));
+    renderGroups();
+  };
+  document.getElementById("collapseAll").onclick=()=>{
+    SCHEDULE.forEach(d=>d.matches.forEach(mm=>userToggled[mm.id]=false));
+    renderGroups();
+  };
+  document.getElementById("clearFilter").onclick=()=>{
+    filter.date=""; filter.team="";
+    document.getElementById("fDate").value="";
+    document.getElementById("fTeam").value="";
+    renderGroups();
+  };
+}
+
+/* ---------- başlat ---------- */
+initFilterBar();
+await loadState();
+</script>
+</body>
+</html>
