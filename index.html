@@ -684,17 +684,33 @@ function applyData(d){
   PLAYERS.forEach(p => state.predictions[p] = state.predictions[p] || {});
 }
 
-/* ---------- kalıcılık ---------- */
+/* ---------- kalıcılık ----------
+   ÖNEMLİ: Veri kaybını önlemek için artık tüm döküman ASLA tek seferde
+   ezilmez. Her işlem yalnızca ilgili alanı günceller (updateDoc + alan yolu).
+   Böylece bir kişinin kaydı, başkasının verisine fiziksel olarak dokunmaz. */
+
+let dataReady = false;   // ilk veri Firebase'den inene kadar yazmayı engelle (kazara ezme koruması)
+
 async function loadState(){
   if (FIREBASE_ON){
     const ref = fb.doc(db,"league","altinkupa");
+    // ilk açılışta döküman yoksa tohumu yaz; varsa ASLA dokunma
     try{
       const first = await fb.getDoc(ref);
-      if(!first.exists()){ await fb.setDoc(ref, buildSeedState()); }
+      if(!first.exists()){
+        await fb.setDoc(ref, buildSeedState());
+      }
     }catch(e){ console.error(e); }
+    // canlı dinleme — her değişiklikte güncel veriyi al
     fb.onSnapshot(ref, snap=>{
       if (snap.exists()){
         applyData(snap.data());
+        dataReady = true;   // artık güncel veri elimizde, yazmak güvenli
+        if (currentUser){ renderGroups(); renderLadder(); renderMyStats(); }
+      } else {
+        // döküman silinmişse tohumdan yeniden kur
+        applyData(buildSeedState());
+        dataReady = true;
         if (currentUser){ renderGroups(); renderLadder(); renderMyStats(); }
       }
     });
@@ -705,16 +721,69 @@ async function loadState(){
       const res = await window.storage.get(STORE_KEY, true);
       if (res && res.value){ applyData(JSON.parse(res.value)); loaded=true; }
     }catch(e){}
-    if(!loaded){ applyData(buildSeedState()); await persist(); }
+    if(!loaded){ applyData(buildSeedState()); }
+    dataReady = true;
+    if(!loaded){ await persistLocal(); }
     setSync("local","Yerel mod · (Firebase bağlanınca canlı olur)");
   }
 }
-async function persist(){
-  const payload = { predictions: state.predictions, results: state.results };
+
+// Yerel mod (Firebase kapalıyken) tüm state'i yazar — burada kayıp riski yok, tek cihaz
+async function persistLocal(){
+  try{ await window.storage.set(STORE_KEY, JSON.stringify({predictions:state.predictions, results:state.results}), true); }catch(e){}
+}
+
+/* Tek bir oyuncunun tek bir maç tahminini güvenle kaydet.
+   Firebase'de yalnızca predictions.<oyuncu>.<maç> alanını yazar. */
+async function saveOnePrediction(player, matchId, entry){
   if (FIREBASE_ON){
-    try{ await fb.setDoc(fb.doc(db,"league","altinkupa"), payload); }catch(e){ console.error(e); }
+    if(!dataReady) return; // veri inmeden yazma (kazara ezmeyi önler)
+    try{
+      const ref = fb.doc(db,"league","altinkupa");
+      // alan yolu: predictions.Ali.m5  → sadece bu alanı günceller
+      await fb.setDoc(ref, { predictions: { [player]: { [matchId]: entry } } }, { merge:true });
+    }catch(e){ console.error(e); }
   } else {
-    try{ await window.storage.set(STORE_KEY, JSON.stringify(payload), true); }catch(e){}
+    await persistLocal();
+  }
+}
+
+/* Bir oyuncunun bir maç tahminini güvenle SİL (kilidi açıp boşaltma gerekmez ama dursun). */
+async function deleteOnePrediction(player, matchId){
+  if (FIREBASE_ON){
+    if(!dataReady) return;
+    try{
+      const ref = fb.doc(db,"league","altinkupa");
+      await fb.updateDoc(ref, { ["predictions."+player+"."+matchId]: fb.deleteField() });
+    }catch(e){ console.error(e); }
+  } else {
+    await persistLocal();
+  }
+}
+
+/* Bir maçın sonucunu güvenle kaydet (yalnızca results.<maç> alanı). */
+async function saveOneResult(matchId, score){
+  if (FIREBASE_ON){
+    if(!dataReady) return;
+    try{
+      const ref = fb.doc(db,"league","altinkupa");
+      await fb.setDoc(ref, { results: { [matchId]: score } }, { merge:true });
+    }catch(e){ console.error(e); }
+  } else {
+    await persistLocal();
+  }
+}
+
+/* Bir maçın sonucunu güvenle SİL (yalnızca results.<maç> alanı silinir). */
+async function deleteOneResult(matchId){
+  if (FIREBASE_ON){
+    if(!dataReady) return;
+    try{
+      const ref = fb.doc(db,"league","altinkupa");
+      await fb.updateDoc(ref, { ["results."+matchId]: fb.deleteField() });
+    }catch(e){ console.error(e); }
+  } else {
+    await persistLocal();
   }
 }
 function setSync(cls,txt){
@@ -977,16 +1046,18 @@ function buildCard(day, mm){
   if(saveBtn) saveBtn.onclick=()=>{
     const cur=state.predictions[me][m.id];
     const s = (cur&&cur.s[0]!=null) ? cur.s : [cur?cur.s[0]??0:0, cur?cur.s[1]??0:0];
-    state.predictions[me][m.id]={s,locked:true};
+    const entry={s,locked:true};
+    state.predictions[me][m.id]=entry;
     userToggled[m.id]=false;
-    persist(); renderGroups(); renderLadder(); renderMyStats();
+    saveOnePrediction(me, m.id, entry); renderGroups(); renderLadder(); renderMyStats();
   };
   const unlockBtn=card.querySelector(".btn-unlock");
   if(unlockBtn) unlockBtn.onclick=()=>{
     const cur=state.predictions[me][m.id];
-    state.predictions[me][m.id]={s:cur.s,locked:false};
+    const entry={s:cur.s,locked:false};
+    state.predictions[me][m.id]=entry;
     userToggled[m.id]=true;
-    persist(); renderGroups();
+    saveOnePrediction(me, m.id, entry); renderGroups();
   };
   const rs=card.querySelector(".result-save");
   if(rs) rs.onclick=()=>{
@@ -994,15 +1065,16 @@ function buildCard(day, mm){
     const a=card.querySelector('input[data-res="a"]').value;
     const msg=card.querySelector(".result-msg");
     if(h===""||a===""){ msg.textContent="İki skoru da gir, sonra kaydet."; msg.style.color="var(--bad)"; return; }
-    state.results[m.id]=[Math.max(0,parseInt(h,10)||0),Math.max(0,parseInt(a,10)||0)];
+    const score=[Math.max(0,parseInt(h,10)||0),Math.max(0,parseInt(a,10)||0)];
+    state.results[m.id]=score;
     delete userToggled[m.id];
-    persist(); renderGroups(); renderLadder(); renderMyStats(); renderCountdown();
+    saveOneResult(m.id, score); renderGroups(); renderLadder(); renderMyStats(); renderCountdown();
   };
   const rc=card.querySelector(".result-clear");
   if(rc) rc.onclick=()=>{
     delete state.results[m.id];
     delete userToggled[m.id];
-    persist(); renderGroups(); renderLadder(); renderMyStats(); renderCountdown();
+    deleteOneResult(m.id); renderGroups(); renderLadder(); renderMyStats(); renderCountdown();
   };
 
   return card;
