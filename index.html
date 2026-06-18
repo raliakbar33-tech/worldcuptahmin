@@ -909,24 +909,30 @@ function renderMyStats(){
 
 /* ---------- geri sayım ---------- */
 function renderCountdown(){
-  // sonraki oynanmamış maçın tahmini günü (sadece gün hassasiyetinde)
-  const monthMap={"Haziran":5}; // JS ayları 0-index
-  let target=null, label="";
+  // Bugünden SONRA (veya bugün) oynanacak ilk maç gününü bul; geçmiş günleri atla.
+  const monthMap={"Haziran":5,"Temmuz":6}; // JS ayları 0-index
+  const now=new Date();
+  const todayStart=new Date(now.getFullYear(), now.getMonth(), now.getDate(),0,0,0);
+  let target=null, label="", playingToday=false;
   for(const day of SCHEDULE){
-    const hasUnplayed=day.matches.some(mm=>!state.results[mm.id]);
-    if(hasUnplayed){
-      const m=day.day.match(/(\d+)\s+(\w+)/);
-      if(m){ target=new Date(2026, monthMap[m[2]]??5, parseInt(m[1],10), 19,0,0); label=day.day; }
-      break;
-    }
+    const m=day.day.match(/(\d+)\s+(\w+)/);
+    if(!m) continue;
+    const dayDate=new Date(2026, monthMap[m[2]]??5, parseInt(m[1],10), 19,0,0);
+    const dayMidnight=new Date(2026, monthMap[m[2]]??5, parseInt(m[1],10),0,0,0);
+    // bu günün maçları bugünden önceyse atla
+    if(dayMidnight < todayStart) continue;
+    target=dayDate; label=day.day;
+    // bugünün maçı mı?
+    if(dayMidnight.getTime()===todayStart.getTime()) playingToday=true;
+    break;
   }
   const cd=document.getElementById("countdown");
   const ct=document.getElementById("cdTitle");
-  if(!target){ ct.textContent=""; cd.innerHTML=""; return; }
+  if(!target){ ct.textContent="Grup aşaması tamamlandı"; cd.innerHTML=`<div class="cd-live">🏁 Tüm grup maçları oynandı</div>`; return; }
   function tick(){
-    const now=new Date();
-    let diff=Math.floor((target-now)/1000);
-    if(diff<=0){ ct.textContent="Maçlar başladı!"; cd.innerHTML=`<div class="cd-live">⚽ ${label} oynanıyor</div>`; return; }
+    const n=new Date();
+    let diff=Math.floor((target-n)/1000);
+    if(diff<=0){ ct.textContent="Bugün maç var!"; cd.innerHTML=`<div class="cd-live">⚽ ${label} oynanıyor</div>`; return; }
     const d=Math.floor(diff/86400); diff-=d*86400;
     const h=Math.floor(diff/3600); diff-=h*3600;
     const mn=Math.floor(diff/60); const s=diff-mn*60;
