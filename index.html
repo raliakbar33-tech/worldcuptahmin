@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Altın Kupa · Dünya Kupası 2026 Tahmin Ligi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Albert+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Albert+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg-a:#E7EDDC;
@@ -402,6 +402,119 @@
   .arch-card .at .fl{font-size:20px;}
   .arch-card .av{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-width:54px;text-align:right;}
 
+  /* ---------- Söz Tahtası ---------- */
+  .quote-board{
+    border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
+    border:1px solid var(--line);
+  }
+  .qb-head{
+    text-align:center;padding:34px 24px 22px;background:var(--card);
+  }
+  .qb-pin{font-size:30px;margin-bottom:8px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.18));}
+  .qb-title{font-family:'Marcellus',serif;font-weight:400;font-size:26px;color:var(--green-deep);}
+  .qb-sub{color:var(--muted);font-size:13px;margin-top:8px;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.55;}
+
+  .qb-daynav{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    background:var(--card);padding:0 0 18px;
+  }
+  .qb-navbtn{
+    width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card-soft);
+    color:var(--green-deep);font-size:15px;cursor:pointer;transition:border-color .15s,background .15s;
+  }
+  .qb-navbtn:hover:not(:disabled){border-color:var(--gold);background:#F6EDD4;}
+  .qb-navbtn:disabled{opacity:.3;cursor:not-allowed;}
+  .qb-daylabel{font-family:'Marcellus',serif;font-size:14px;color:var(--muted);min-width:160px;text-align:center;}
+
+  .qb-composer{
+    background:var(--card);padding:0 26px 28px;
+  }
+  .qb-composer textarea{
+    width:100%;min-height:70px;max-height:140px;resize:vertical;border-radius:14px;border:1.5px dashed var(--gold-soft);
+    background:#FBF6E8;padding:14px 16px;font-family:'Caveat',cursive;font-size:21px;line-height:1.35;color:var(--ink);
+  }
+  .qb-composer textarea::placeholder{color:#B79A5C;font-family:'Albert Sans',sans-serif;font-size:13px;}
+  .qb-composer textarea:focus{outline:none;border-color:var(--gold);}
+  .qb-composer-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;}
+  .qb-count{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+  .qb-pinbtn{
+    height:40px;padding:0 20px;border-radius:10px;border:none;cursor:pointer;
+    background:linear-gradient(140deg,var(--green),var(--green-deep));color:#fff;
+    font-family:'Albert Sans',sans-serif;font-size:13px;font-weight:700;transition:filter .15s,transform .1s;
+    box-shadow:0 4px 12px rgba(15,74,47,.25);
+  }
+  .qb-pinbtn:hover:not(:disabled){filter:brightness(1.1);}
+  .qb-pinbtn:active:not(:disabled){transform:translateY(1px);}
+  .qb-pinbtn:disabled{opacity:.4;cursor:not-allowed;}
+
+  .qb-mine-note{
+    background:var(--card);padding:0 26px 26px;text-align:center;
+  }
+  .qb-mine-badge{
+    display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--lock);
+    border:1px solid var(--gold-soft);background:#F6EDD4;border-radius:999px;padding:6px 14px;margin-bottom:10px;
+  }
+  .qb-mine-actions{display:flex;justify-content:center;gap:10px;margin-top:8px;}
+  .qb-mine-actions button{
+    height:32px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--card-soft);
+    color:var(--muted);font-family:'Albert Sans',sans-serif;font-size:12px;cursor:pointer;transition:border-color .15s,color .15s;
+  }
+  .qb-mine-actions button:hover{border-color:var(--gold);color:var(--gold);}
+  .qb-mine-actions button.danger:hover{border-color:var(--bad);color:var(--bad);}
+
+  .qb-board{
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.025) 0 2px, transparent 2px 4px),
+      linear-gradient(180deg, #C9A467, #B98A4C);
+    padding:30px 22px 38px;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px 18px;
+    min-height:160px;
+  }
+  .qb-empty{
+    grid-column:1/-1;text-align:center;color:#F4E9CE;font-family:'Marcellus',serif;font-size:15px;
+    padding:30px 10px;opacity:.85;
+  }
+  .qb-note{
+    position:relative;border-radius:3px;padding:20px 14px 16px;
+    box-shadow:0 6px 14px rgba(0,0,0,.18), 0 1px 0 rgba(255,255,255,.4) inset;
+    display:flex;flex-direction:column;justify-content:space-between;min-height:120px;
+    transition:transform .18s,box-shadow .18s;
+    animation:qbPop .35s ease backwards;
+  }
+  .qb-note:hover{transform:translateY(-3px) scale(1.02) !important;box-shadow:0 10px 20px rgba(0,0,0,.22), 0 1px 0 rgba(255,255,255,.4) inset;z-index:2;}
+  .qb-note::before{
+    content:'';position:absolute;top:-7px;left:50%;transform:translateX(-50%);
+    width:14px;height:14px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #f2d4d4, #b23a3a);
+    box-shadow:0 2px 4px rgba(0,0,0,.35);
+  }
+  .qb-note.c1{background:#FBF0C8;}
+  .qb-note.c2{background:#D9ECD0;}
+  .qb-note.c3{background:#F7DCC4;}
+  .qb-note.c4{background:#E4E9F2;}
+  .qb-note.c5{background:#F3D9E6;}
+  .qb-note .qb-text{
+    font-family:'Caveat',cursive;font-size:20px;line-height:1.28;color:#2A2A1E;
+    word-break:break-word;white-space:pre-wrap;
+  }
+  .qb-note .qb-foot{display:flex;justify-content:flex-end;align-items:center;margin-top:10px;}
+  .qb-heart{
+    background:none;border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:5px;
+    color:#8a6a3a;font-family:'Albert Sans',sans-serif;font-weight:600;transition:transform .12s;
+  }
+  .qb-heart:hover{transform:scale(1.12);}
+  .qb-heart.on{color:#A83232;}
+  .qb-note.mine{outline:2px solid rgba(168,126,34,.55);outline-offset:2px;}
+
+  @keyframes qbPop{from{opacity:0;transform:translateY(8px) scale(.94);}to{opacity:1;transform:translateY(0) scale(1);}}
+  @media (prefers-reduced-motion: reduce){.qb-note{animation:none;}}
+
+  @media (max-width:560px){
+    .qb-board{grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:18px 14px;padding:24px 14px 30px;}
+    .qb-note{min-height:104px;padding:16px 11px 13px;}
+    .qb-note .qb-text{font-size:18px;}
+  }
+
   .hidden{display:none !important;}
   footer{text-align:center;margin-top:48px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);opacity:.7;}
 
@@ -473,6 +586,7 @@
     <button class="tab active" data-tab="knockout">Eleme Turları</button>
     <button class="tab" data-tab="archive">Arşiv</button>
     <button class="tab" data-tab="ladder">Sıralama</button>
+    <button class="tab" data-tab="quotes">Günün Sözü</button>
     <button class="tab" data-tab="rules">Kurallar</button>
   </nav>
 
@@ -513,6 +627,25 @@
   </section>
 
   <section id="tab-ladder" class="hidden"></section>
+
+  <section id="tab-quotes" class="hidden">
+    <div class="quote-board">
+      <div class="qb-head">
+        <div class="qb-pin">📌</div>
+        <h2 class="qb-title">Günün Sözü</h2>
+        <p class="qb-sub">Bugün aklından geçeni bırak. Bir cümle, bir söz, bir laf… Kimin yazdığı sır kalsın, sadece sözler konuşsun.</p>
+      </div>
+
+      <div class="qb-daynav">
+        <button class="qb-navbtn" id="qbPrev" aria-label="Önceki gün">‹</button>
+        <span class="qb-daylabel" id="qbDayLabel">Bugün</span>
+        <button class="qb-navbtn" id="qbNext" aria-label="Sonraki gün">›</button>
+      </div>
+
+      <div id="qbComposer"></div>
+      <div id="qbBoard" class="qb-board"></div>
+    </div>
+  </section>
 
   <section id="tab-rules" class="hidden">
     <div class="rules">
@@ -854,11 +987,11 @@ function buildSeedState(){
   PLAYERS.forEach(p => preds[p] = {});
   const koPreds = {};
   PLAYERS.forEach(p => koPreds[p] = {});
-  return { predictions:preds, results:{}, koPredictions:koPreds, koResults:{}, koSlotOverrides:{} };
+  return { predictions:preds, results:{}, koPredictions:koPreds, koResults:{}, koSlotOverrides:{}, quotes:{} };
 }
 
 /* ================= DURUM ================= */
-let state = { predictions:{}, results:{}, koPredictions:{}, koResults:{}, koSlotOverrides:{} };
+let state = { predictions:{}, results:{}, koPredictions:{}, koResults:{}, koSlotOverrides:{}, quotes:{} };
 PLAYERS.forEach(p => { state.predictions[p] = {}; state.koPredictions[p] = {}; });
 let currentUser = null;
 const STORE_KEY = "altinkupa-v4";
@@ -874,6 +1007,7 @@ function applyData(d){
   state.koPredictions = d.koPredictions || {};
   state.koResults = d.koResults || {};
   state.koSlotOverrides = d.koSlotOverrides || {};
+  state.quotes = d.quotes || {};
   PLAYERS.forEach(p => {
     state.predictions[p] = state.predictions[p] || {};
     state.koPredictions[p] = state.koPredictions[p] || {};
@@ -902,12 +1036,12 @@ async function loadState(){
       if (snap.exists()){
         applyData(snap.data());
         dataReady = true;   // artık güncel veri elimizde, yazmak güvenli
-        if (currentUser){ renderGroups(); renderLadder(); renderMyStats(); renderKnockout(); }
+        if (currentUser){ renderGroups(); renderLadder(); renderMyStats(); renderKnockout(); renderQuotes(); }
       } else {
         // döküman silinmişse tohumdan yeniden kur
         applyData(buildSeedState());
         dataReady = true;
-        if (currentUser){ renderGroups(); renderLadder(); renderMyStats(); renderKnockout(); }
+        if (currentUser){ renderGroups(); renderLadder(); renderMyStats(); renderKnockout(); renderQuotes(); }
       }
     });
     setSync("live","Canlı · senkronize");
@@ -928,7 +1062,8 @@ async function loadState(){
 async function persistLocal(){
   try{ await window.storage.set(STORE_KEY, JSON.stringify({
     predictions:state.predictions, results:state.results,
-    koPredictions:state.koPredictions, koResults:state.koResults, koSlotOverrides:state.koSlotOverrides
+    koPredictions:state.koPredictions, koResults:state.koResults, koSlotOverrides:state.koSlotOverrides,
+    quotes:state.quotes
   }), true); }catch(e){}
 }
 
@@ -1024,6 +1159,42 @@ async function saveKoSlotOverride(key, code){
   } else { await persistLocal(); }
 }
 
+/* ---- Söz Tahtası — aynı alan-bazlı güvenli kayıt mantığı ----
+   state.quotes[dateKey][quoteId] = {text, by, ts, hearts:{username:true}}
+   "by" alanı sadece kendi sözünü düzenleyebilmek için kullanılır,
+   arayüzde HİÇBİR yerde gösterilmez (anonimlik UI seviyesinde sağlanır). */
+async function saveOneQuote(dateKey, quoteId, payload){
+  if (FIREBASE_ON){
+    if(!dataReady) return;
+    try{
+      const ref = fb.doc(db,"league","altinkupa");
+      await fb.setDoc(ref, { quotes: { [dateKey]: { [quoteId]: payload } } }, { merge:true });
+    }catch(e){ console.error(e); }
+  } else { await persistLocal(); }
+}
+async function deleteOneQuote(dateKey, quoteId){
+  if (FIREBASE_ON){
+    if(!dataReady) return;
+    try{
+      const ref = fb.doc(db,"league","altinkupa");
+      await fb.updateDoc(ref, { ["quotes."+dateKey+"."+quoteId]: fb.deleteField() });
+    }catch(e){ console.error(e); }
+  } else { await persistLocal(); }
+}
+async function toggleQuoteHeart(dateKey, quoteId, username, on){
+  if (FIREBASE_ON){
+    if(!dataReady) return;
+    try{
+      const ref = fb.doc(db,"league","altinkupa");
+      if(on){
+        await fb.setDoc(ref, { quotes: { [dateKey]: { [quoteId]: { hearts: { [username]: true } } } } }, { merge:true });
+      } else {
+        await fb.updateDoc(ref, { ["quotes."+dateKey+"."+quoteId+".hearts."+username]: fb.deleteField() });
+      }
+    }catch(e){ console.error(e); }
+  } else { await persistLocal(); }
+}
+
 function setSync(cls,txt){
   const el = document.getElementById("syncState");
   el.className = "sync-state " + cls;
@@ -1075,7 +1246,7 @@ function tryLogin(){
   currentUser=found;
   document.getElementById("login").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
-  renderSession(); renderGroups(); renderLadder(); renderMyStats(); renderCountdown(); renderArchive(); renderKnockout();
+  renderSession(); renderGroups(); renderLadder(); renderMyStats(); renderCountdown(); renderArchive(); renderKnockout(); renderQuotes();
 }
 function logout(){
   currentUser=null;
@@ -1369,6 +1540,144 @@ function buildCard(day, mm){
   };
 
   return card;
+}
+
+/* ================= SÖZ TAHTASI =================
+   Herkes günde bir söz bırakabilir. Kim yazdığı arayüzde HİÇBİR yerde
+   gösterilmez — sadece kendi sözünü düzenleyip silebilmek için "by"
+   alanı dahili olarak tutulur. Notların panodaki sırası, yazılma sırasını
+   ele vermeyecek şekilde sabit bir hash ile karıştırılır. */
+function pad2(n){ return String(n).padStart(2,'0'); }
+function dateKeyOffset(offset){
+  const d=new Date(); d.setDate(d.getDate()+offset);
+  return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+}
+function dateLabelOffset(offset){
+  if(offset===0) return "Bugün";
+  if(offset===-1) return "Dün";
+  const d=new Date(); d.setDate(d.getDate()+offset);
+  const days=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+  const months=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+  return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
+}
+let qbOffset=0;
+const QB_MAX_PAST=30, QB_MAX_CHARS=220, QB_COLORS=["c1","c2","c3","c4","c5"];
+function quoteHash(id){ let h=0; for(let i=0;i<id.length;i++){ h=(h*31+id.charCodeAt(i))|0; } return Math.abs(h); }
+function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function composerHTML(existingText){
+  return `
+    <div class="qb-composer">
+      <textarea id="qbText" maxlength="${QB_MAX_CHARS}" placeholder="Günün sözü, bir alıntı, kısa bir laf… (kimin yazdığı görünmeyecek)">${existingText?escapeHtml(existingText):""}</textarea>
+      <div class="qb-composer-row">
+        <span class="qb-count" id="qbCount">0/${QB_MAX_CHARS}</span>
+        <button class="qb-pinbtn" id="qbPinBtn" disabled>📌 Tahtaya yapıştır</button>
+      </div>
+    </div>`;
+}
+function wireComposer(dateKey, existingId, existingText){
+  const ta=document.getElementById("qbText");
+  const cnt=document.getElementById("qbCount");
+  const btn=document.getElementById("qbPinBtn");
+  function refresh(){ cnt.textContent=`${ta.value.length}/${QB_MAX_CHARS}`; btn.disabled = ta.value.trim().length===0; }
+  ta.addEventListener("input", refresh);
+  refresh();
+  if(existingText) ta.focus();
+  btn.onclick=()=>{
+    const text=ta.value.trim();
+    if(!text) return;
+    const me=currentUser.name;
+    const qid = existingId || ("q_"+Date.now()+"_"+Math.random().toString(36).slice(2,7));
+    const prevHearts = (existingId && state.quotes[dateKey] && state.quotes[dateKey][existingId]) ? (state.quotes[dateKey][existingId].hearts||{}) : {};
+    const payload = { text, by:me, ts:Date.now(), hearts:prevHearts };
+    if(!state.quotes[dateKey]) state.quotes[dateKey]={};
+    state.quotes[dateKey][qid]=payload;
+    saveOneQuote(dateKey, qid, payload);
+    renderQuotes();
+  };
+}
+
+function renderQuotes(){
+  if(!currentUser) return;
+  const dayLabelEl=document.getElementById("qbDayLabel");
+  const prevBtn=document.getElementById("qbPrev");
+  const nextBtn=document.getElementById("qbNext");
+  if(!dayLabelEl) return;
+  const dateKey=dateKeyOffset(qbOffset);
+  dayLabelEl.textContent=dateLabelOffset(qbOffset);
+  nextBtn.disabled = (qbOffset>=0);
+  prevBtn.disabled = (qbOffset<=-QB_MAX_PAST);
+
+  const dayQuotes = state.quotes[dateKey] || {};
+  const me = currentUser.name;
+  const myEntry = Object.entries(dayQuotes).find(([id,q])=>q.by===me);
+
+  const composerBox=document.getElementById("qbComposer");
+  if(qbOffset===0){
+    if(myEntry){
+      const [qid,q]=myEntry;
+      composerBox.innerHTML = `
+        <div class="qb-mine-note">
+          <div class="qb-mine-badge">✓ Bugün için sözünü astın</div>
+          <div class="qb-mine-actions">
+            <button id="qbEditMine">✏️ Düzenle</button>
+            <button id="qbDeleteMine" class="danger">🗑 Kaldır</button>
+          </div>
+        </div>`;
+      document.getElementById("qbDeleteMine").onclick=()=>{
+        delete state.quotes[dateKey][qid];
+        deleteOneQuote(dateKey, qid);
+        renderQuotes();
+      };
+      document.getElementById("qbEditMine").onclick=()=>{
+        composerBox.innerHTML = composerHTML(q.text);
+        wireComposer(dateKey, qid, q.text);
+      };
+    } else {
+      composerBox.innerHTML = composerHTML("");
+      wireComposer(dateKey, null, "");
+    }
+  } else {
+    composerBox.innerHTML = `<div class="qb-mine-note" style="padding-top:0;"><span style="font-size:12px;color:var(--muted);">Geçmiş günler sadece okunur — yeni söz bırakmak için bugüne dön.</span></div>`;
+  }
+
+  const board=document.getElementById("qbBoard");
+  const entries=Object.entries(dayQuotes);
+  if(entries.length===0){
+    board.innerHTML = `<div class="qb-empty">${qbOffset===0?"Bugün henüz kimse söz bırakmamış. İlk sen ol! 📌":"Bu gün için söz bırakılmamış."}</div>`;
+    return;
+  }
+  entries.sort((a,b)=> quoteHash(a[0]) - quoteHash(b[0]));
+  board.innerHTML = entries.map(([qid,q],i)=>{
+    const colorCls=QB_COLORS[quoteHash(qid)%QB_COLORS.length];
+    const rot=(quoteHash(qid)%7)-3;
+    const hearts=q.hearts||{};
+    const heartCount=Object.keys(hearts).length;
+    const iHearted=!!hearts[me];
+    const mine=q.by===me;
+    return `<div class="qb-note ${colorCls} ${mine?'mine':''}" style="transform:rotate(${rot}deg);animation-delay:${i*0.04}s">
+      <div class="qb-text">${escapeHtml(q.text)}</div>
+      <div class="qb-foot">
+        <button class="qb-heart ${iHearted?'on':''}" data-qid="${qid}">${iHearted?'❤':'🤍'} ${heartCount>0?heartCount:''}</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  board.querySelectorAll(".qb-heart").forEach(btn=>{
+    btn.onclick=()=>{
+      const qid=btn.dataset.qid;
+      const q=state.quotes[dateKey][qid];
+      if(!q.hearts) q.hearts={};
+      const on=!q.hearts[me];
+      if(on) q.hearts[me]=true; else delete q.hearts[me];
+      toggleQuoteHeart(dateKey, qid, me, on);
+      renderQuotes();
+    };
+  });
+}
+function initQuoteBoard(){
+  document.getElementById("qbPrev").onclick=()=>{ qbOffset--; renderQuotes(); };
+  document.getElementById("qbNext").onclick=()=>{ if(qbOffset<0){ qbOffset++; renderQuotes(); } };
 }
 
 function renderArchive(){
@@ -1767,7 +2076,7 @@ document.querySelectorAll(".tab").forEach(t=>{
   t.onclick=()=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
     t.classList.add("active");
-    ["groups","knockout","archive","ladder","rules"].forEach(n=>{
+    ["groups","knockout","archive","ladder","quotes","rules"].forEach(n=>{
       document.getElementById("tab-"+n).classList.toggle("hidden", n!==t.dataset.tab);
     });
   };
@@ -1815,6 +2124,7 @@ toTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 
 /* ---------- başlat ---------- */
 initFilterBar();
+initQuoteBoard();
 await loadState();
 </script>
 </body>
