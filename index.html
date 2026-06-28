@@ -260,6 +260,14 @@
   .lock-badge{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--lock);}
 
   .others{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px;padding-top:13px;border-top:1px dashed var(--line);font-size:12px;color:var(--muted);}
+  .others-hidden{
+    margin-top:16px;padding-top:13px;border-top:1px dashed var(--line);
+    font-size:12px;color:var(--muted);text-align:center;font-style:italic;
+  }
+  .ko-locked-score{
+    font-family:'DM Mono',monospace;font-size:22px;color:var(--green-deep);font-weight:500;
+    border:1px solid var(--gold-soft);background:#F6EDD4;border-radius:9px;padding:6px 22px;
+  }
   .others .pill{background:var(--card-soft);border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--ink);font-family:'DM Mono',monospace;font-size:12px;}
   .others .pill b{font-family:'Albert Sans',sans-serif;font-weight:600;color:var(--muted);margin-right:6px;}
   .others .pill.hit{border-color:var(--gold);color:var(--gold);background:#F6EDD4;font-weight:600;}
@@ -336,6 +344,48 @@
   .rules li:last-child{border-bottom:none;}
   .rules .pts{font-family:'DM Mono',monospace;color:var(--gold);white-space:nowrap;border:1px solid var(--gold-soft);border-radius:8px;padding:3px 12px;font-size:14px;background:#F6EDD4;}
   .rules p{margin-top:16px;font-size:13px;color:var(--muted);line-height:1.6;}
+
+  /* ---------- Eleme turu (bracket) ---------- */
+  .ko-round-tabs{
+    position:sticky;top:0;z-index:19;background:rgba(252,253,248,.92);backdrop-filter:blur(8px);
+    border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);
+    padding:8px;margin-bottom:18px;display:flex;gap:4px;overflow-x:auto;
+  }
+  .ko-round-tabs button{
+    flex:1;white-space:nowrap;background:none;border:none;border-radius:9px;
+    padding:9px 12px;font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.04em;
+    color:var(--muted);cursor:pointer;transition:background .15s,color .15s;
+  }
+  .ko-round-tabs button.active{background:var(--card-soft);color:var(--green-deep);}
+  .ko-round-tabs button:hover{color:var(--green);}
+
+  .ko-match{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);padding:18px 20px;margin-bottom:16px;
+  }
+  .ko-match.finished{background:linear-gradient(180deg,#FBF6E8,var(--card-soft));border-color:var(--gold-soft);}
+  .ko-meta{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+  .ko-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;}
+  .ko-team{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;}
+  .ko-team .flag{font-size:32px;line-height:1;}
+  .ko-team .name{font-weight:600;font-size:14px;}
+  .ko-team .name.tbd{color:var(--muted);font-weight:500;font-size:12px;font-style:italic;}
+  .ko-tbd-input{display:flex;gap:6px;margin-top:6px;justify-content:center;}
+  .ko-tbd-input select{
+    font-size:11px;height:28px;border-radius:7px;border:1px solid var(--gold-soft);background:#FBF6E8;color:var(--lock);padding:0 6px;
+  }
+  .ko-pending-note{
+    text-align:center;color:var(--muted);font-size:12px;padding:14px;border:1px dashed var(--line);border-radius:10px;margin-top:14px;
+  }
+  .ko-winner-pick{display:flex;justify-content:center;gap:8px;margin-top:14px;}
+  .ko-winner-pick button{
+    flex:1;max-width:200px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--card-soft);
+    color:var(--ink);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:border-color .15s,background .15s;
+  }
+  .ko-winner-pick button.sel{background:#F6EDD4;border-color:var(--gold-soft);color:var(--gold);}
+  .ko-advance{
+    margin-top:12px;text-align:center;font-size:12px;color:var(--lock);font-weight:600;
+  }
 
   /* ---------- Arşiv ---------- */
   .archive-note{
@@ -448,12 +498,11 @@
   </section>
 
   <section id="tab-knockout" class="hidden">
-    <div class="placeholder">
-      <div class="ico">🔒</div>
-      <h3>Eleme turları henüz açılmadı</h3>
-      <p>Son 32, son 16, çeyrek final, yarı final ve final eşleşmeleri grup aşaması bittiğinde belli olacak. Gruplar tamamlanınca bu sekmeyi tahmine açacağız.</p>
-      <div class="bracket">SON 32 · SON 16 · ÇEYREK · YARI · FİNAL</div>
+    <div class="archive-note" style="border-color:var(--gold-soft);">
+      🏆 Grup aşaması bitti, eleme turları açıldı! Skor tahminini gir ve kilitle — puanlama grup maçlarıyla aynı (tam skor 3, doğru sonuç 1). Yönetici sonucu girince o maç biter ve <b>kazanan otomatik olarak bir sonraki tura</b> taşınır. Bazı eşleşmelerde rakip henüz netleşmedi ("Bekleniyor") — netleşince yönetici takımı atayacak.
     </div>
+    <div id="koRoundTabs" class="ko-round-tabs"></div>
+    <div id="koList"></div>
   </section>
 
   <section id="tab-archive" class="hidden">
@@ -549,6 +598,102 @@ const NM = {
   POR:"Portekiz",COD:"DR Kongo",UZB:"Özbekistan",COL:"Kolombiya",ENG:"İngiltere",CRO:"Hırvatistan",GHA:"Gana",PAN:"Panama"
 };
 function team(code){ return {n:NM[code], f:F[code]}; }
+
+/* ================= ELEME TURLARI (BRACKET) =================
+   Kaynak: FIFA resmi maç numaralandırması + ESPN canlı bracket (28 Haz 2026).
+   Her maçın home/away slotu üç türden biri olabilir:
+   - {type:'fixed', code:'GER'}            → takım kesin biliniyor
+   - {type:'tbd', label:'C/E/F/H/I 3.sü'}  → henüz netleşmedi, yönetici elle atar
+   - {type:'winner', ref:'k79'}            → başka bir maçın galibi (otomatik dolar)
+   - {type:'loser',  ref:'sf1'}            → (sadece 3.lük maçı) o maçın kaybedeni
+   "ref" değeri KO_MATCHES içindeki bir maçın id'sidir. */
+const KO_ROUNDS = [
+  { id:'r32', name:'Son 32', matches:[
+    {id:'k73', home:{type:'fixed',code:'RSA'}, away:{type:'fixed',code:'CAN'}, date:'28 Haziran', venue:'Los Angeles'},
+    {id:'k74', home:{type:'fixed',code:'GER'}, away:{type:'fixed',code:'PAR'}, date:'29 Haziran', venue:'Boston'},
+    {id:'k75', home:{type:'fixed',code:'NED'}, away:{type:'fixed',code:'MAR'}, date:'30 Haziran', venue:'Monterrey'},
+    {id:'k76', home:{type:'fixed',code:'BRA'}, away:{type:'fixed',code:'JPN'}, date:'29 Haziran', venue:'Houston'},
+    {id:'k77', home:{type:'fixed',code:'FRA'}, away:{type:'fixed',code:'SWE'}, date:'30 Haziran', venue:'New York New Jersey'},
+    {id:'k78', home:{type:'fixed',code:'CIV'}, away:{type:'fixed',code:'NOR'}, date:'30 Haziran', venue:'Dallas'},
+    {id:'k79', home:{type:'fixed',code:'MEX'}, away:{type:'fixed',code:'ECU'}, date:'1 Temmuz', venue:'Mexico City'},
+    {id:'k80', home:{type:'fixed',code:'ENG'}, away:{type:'fixed',code:'COD'}, date:'1 Temmuz', venue:'Atlanta'},
+    {id:'k81', home:{type:'fixed',code:'USA'}, away:{type:'fixed',code:'BIH'}, date:'2 Temmuz', venue:'San Francisco'},
+    {id:'k82', home:{type:'fixed',code:'BEL'}, away:{type:'fixed',code:'SEN'}, date:'1 Temmuz', venue:'Seattle'},
+    {id:'k83', home:{type:'fixed',code:'POR'}, away:{type:'fixed',code:'CRO'}, date:'3 Temmuz', venue:'Toronto'},
+    {id:'k84', home:{type:'fixed',code:'ESP'}, away:{type:'fixed',code:'AUT'}, date:'2 Temmuz', venue:'Los Angeles'},
+    {id:'k85', home:{type:'fixed',code:'SUI'}, away:{type:'fixed',code:'ALG'}, date:'3 Temmuz', venue:'Vancouver'},
+    {id:'k86', home:{type:'fixed',code:'ARG'}, away:{type:'fixed',code:'CPV'}, date:'3 Temmuz', venue:'Miami'},
+    {id:'k87', home:{type:'fixed',code:'COL'}, away:{type:'fixed',code:'GHA'}, date:'4 Temmuz', venue:'Kansas City'},
+    {id:'k88', home:{type:'fixed',code:'AUS'}, away:{type:'fixed',code:'EGY'}, date:'3 Temmuz', venue:'Dallas'},
+  ]},
+  { id:'r16', name:'Son 16', matches:[
+    {id:'k89', home:{type:'winner',ref:'k74'}, away:{type:'winner',ref:'k77'}, date:'4 Temmuz', venue:'Philadelphia'},
+    {id:'k90', home:{type:'winner',ref:'k73'}, away:{type:'winner',ref:'k75'}, date:'4 Temmuz', venue:'Houston'},
+    {id:'k91', home:{type:'winner',ref:'k76'}, away:{type:'winner',ref:'k78'}, date:'5 Temmuz', venue:'New York New Jersey'},
+    {id:'k92', home:{type:'winner',ref:'k79'}, away:{type:'winner',ref:'k80'}, date:'5 Temmuz', venue:'Mexico City'},
+    {id:'k93', home:{type:'winner',ref:'k83'}, away:{type:'winner',ref:'k84'}, date:'6 Temmuz', venue:'Dallas'},
+    {id:'k94', home:{type:'winner',ref:'k81'}, away:{type:'winner',ref:'k82'}, date:'6 Temmuz', venue:'Seattle'},
+    {id:'k95', home:{type:'winner',ref:'k86'}, away:{type:'winner',ref:'k88'}, date:'7 Temmuz', venue:'Atlanta'},
+    {id:'k96', home:{type:'winner',ref:'k85'}, away:{type:'winner',ref:'k87'}, date:'7 Temmuz', venue:'Vancouver'},
+  ]},
+  { id:'qf', name:'Çeyrek Final', matches:[
+    {id:'k97',  home:{type:'winner',ref:'k89'}, away:{type:'winner',ref:'k90'}, date:'9 Temmuz', venue:'Boston'},
+    {id:'k98',  home:{type:'winner',ref:'k93'}, away:{type:'winner',ref:'k94'}, date:'10 Temmuz', venue:'Los Angeles'},
+    {id:'k99',  home:{type:'winner',ref:'k91'}, away:{type:'winner',ref:'k92'}, date:'11 Temmuz', venue:'Miami'},
+    {id:'k100', home:{type:'winner',ref:'k95'}, away:{type:'winner',ref:'k96'}, date:'11 Temmuz', venue:'Kansas City'},
+  ]},
+  { id:'sf', name:'Yarı Final', matches:[
+    {id:'k101', home:{type:'winner',ref:'k97'}, away:{type:'winner',ref:'k98'}, date:'14 Temmuz', venue:'Dallas'},
+    {id:'k102', home:{type:'winner',ref:'k99'}, away:{type:'winner',ref:'k100'}, date:'15 Temmuz', venue:'Atlanta'},
+  ]},
+  { id:'br', name:'3. lük Maçı', matches:[
+    {id:'k103', home:{type:'loser',ref:'k101'}, away:{type:'loser',ref:'k102'}, date:'18 Temmuz', venue:'Miami'},
+  ]},
+  { id:'fn', name:'Final', matches:[
+    {id:'k104', home:{type:'winner',ref:'k101'}, away:{type:'winner',ref:'k102'}, date:'19 Temmuz', venue:'New York New Jersey'},
+  ]},
+];
+const KO_MATCHES = [];
+KO_ROUNDS.forEach(r => r.matches.forEach(m => KO_MATCHES.push(Object.assign({round:r.id, roundName:r.name}, m))));
+const KO_BY_ID = {}; KO_MATCHES.forEach(m => KO_BY_ID[m.id]=m);
+
+/* state.koResults[matchId] = {h, a, winner:'home'|'away'}
+   state.koSlotOverrides[matchId+'_h'|'_a'] = 'TUR'  (yönetici TBD slotuna takım atadığında)
+   state.koPredictions[player][matchId] = {s:[h,a], locked:bool}  (grup maçlarıyla aynı yapı) */
+function resolveSlot(slot, matchId, side){
+  if(slot.type==='fixed') return slot.code;
+  if(slot.type==='tbd'){
+    const ov = state.koSlotOverrides[matchId+'_'+side];
+    return ov || null;
+  }
+  if(slot.type==='winner'){
+    const r = state.koResults[slot.ref];
+    if(!r) return null;
+    const refMatch = KO_BY_ID[slot.ref];
+    const winCode = r.winner==='home' ? resolveSlot(refMatch.home, refMatch.id,'h') : resolveSlot(refMatch.away, refMatch.id,'a');
+    return winCode;
+  }
+  if(slot.type==='loser'){
+    const r = state.koResults[slot.ref];
+    if(!r) return null;
+    const refMatch = KO_BY_ID[slot.ref];
+    const loseCode = r.winner==='home' ? resolveSlot(refMatch.away, refMatch.id,'a') : resolveSlot(refMatch.home, refMatch.id,'h');
+    return loseCode;
+  }
+  return null;
+}
+function koSlotLabel(slot, matchId, side){
+  const code = resolveSlot(slot, matchId, side);
+  if(code) return {known:true, code, ...team(code)};
+  if(slot.type==='tbd') return {known:false, label:slot.label};
+  return {known:false, label:'Bekleniyor'};
+}
+function koPointsFor(pred,res){
+  if(!pred||!res||pred[0]==null||pred[1]==null) return null;
+  if(pred[0]===res.h && pred[1]===res.a) return 3;
+  const sg=x=>x>0?1:(x<0?-1:0);
+  return sg(pred[0]-pred[1])===sg(res.h-res.a) ? 1 : 0;
+}
 
 const SCHEDULE = [
   {day:"Perşembe, 11 Haziran", matches:[
@@ -707,12 +852,14 @@ function archiveOf(p){ return ARCHIVE_SCORES[p] || {exact:0,outcome:0,pts:0}; }
 function buildSeedState(){
   const preds = {};
   PLAYERS.forEach(p => preds[p] = {});
-  return { predictions:preds, results:{} };
+  const koPreds = {};
+  PLAYERS.forEach(p => koPreds[p] = {});
+  return { predictions:preds, results:{}, koPredictions:koPreds, koResults:{}, koSlotOverrides:{} };
 }
 
 /* ================= DURUM ================= */
-let state = { predictions:{}, results:{} };
-PLAYERS.forEach(p => state.predictions[p] = {});
+let state = { predictions:{}, results:{}, koPredictions:{}, koResults:{}, koSlotOverrides:{} };
+PLAYERS.forEach(p => { state.predictions[p] = {}; state.koPredictions[p] = {}; });
 let currentUser = null;
 const STORE_KEY = "altinkupa-v4";
 
@@ -724,7 +871,13 @@ function norm(s){
 function applyData(d){
   state.predictions = d.predictions || {};
   state.results = d.results || {};
-  PLAYERS.forEach(p => state.predictions[p] = state.predictions[p] || {});
+  state.koPredictions = d.koPredictions || {};
+  state.koResults = d.koResults || {};
+  state.koSlotOverrides = d.koSlotOverrides || {};
+  PLAYERS.forEach(p => {
+    state.predictions[p] = state.predictions[p] || {};
+    state.koPredictions[p] = state.koPredictions[p] || {};
+  });
 }
 
 /* ---------- kalıcılık ----------
@@ -749,12 +902,12 @@ async function loadState(){
       if (snap.exists()){
         applyData(snap.data());
         dataReady = true;   // artık güncel veri elimizde, yazmak güvenli
-        if (currentUser){ renderGroups(); renderLadder(); renderMyStats(); }
+        if (currentUser){ renderGroups(); renderLadder(); renderMyStats(); renderKnockout(); }
       } else {
         // döküman silinmişse tohumdan yeniden kur
         applyData(buildSeedState());
         dataReady = true;
-        if (currentUser){ renderGroups(); renderLadder(); renderMyStats(); }
+        if (currentUser){ renderGroups(); renderLadder(); renderMyStats(); renderKnockout(); }
       }
     });
     setSync("live","Canlı · senkronize");
@@ -773,7 +926,10 @@ async function loadState(){
 
 // Yerel mod (Firebase kapalıyken) tüm state'i yazar — burada kayıp riski yok, tek cihaz
 async function persistLocal(){
-  try{ await window.storage.set(STORE_KEY, JSON.stringify({predictions:state.predictions, results:state.results}), true); }catch(e){}
+  try{ await window.storage.set(STORE_KEY, JSON.stringify({
+    predictions:state.predictions, results:state.results,
+    koPredictions:state.koPredictions, koResults:state.koResults, koSlotOverrides:state.koSlotOverrides
+  }), true); }catch(e){}
 }
 
 /* Tek bir oyuncunun tek bir maç tahminini güvenle kaydet.
@@ -829,6 +985,45 @@ async function deleteOneResult(matchId){
     await persistLocal();
   }
 }
+
+/* ---- Eleme turu (KO) için güvenli kayıt — aynı alan-bazlı mantık ---- */
+async function saveOneKoPrediction(player, matchId, entry){
+  if (FIREBASE_ON){
+    if(!dataReady) return;
+    try{
+      const ref = fb.doc(db,"league","altinkupa");
+      await fb.setDoc(ref, { koPredictions: { [player]: { [matchId]: entry } } }, { merge:true });
+    }catch(e){ console.error(e); }
+  } else { await persistLocal(); }
+}
+async function saveOneKoResult(matchId, score){
+  if (FIREBASE_ON){
+    if(!dataReady) return;
+    try{
+      const ref = fb.doc(db,"league","altinkupa");
+      await fb.setDoc(ref, { koResults: { [matchId]: score } }, { merge:true });
+    }catch(e){ console.error(e); }
+  } else { await persistLocal(); }
+}
+async function deleteOneKoResult(matchId){
+  if (FIREBASE_ON){
+    if(!dataReady) return;
+    try{
+      const ref = fb.doc(db,"league","altinkupa");
+      await fb.updateDoc(ref, { ["koResults."+matchId]: fb.deleteField() });
+    }catch(e){ console.error(e); }
+  } else { await persistLocal(); }
+}
+async function saveKoSlotOverride(key, code){
+  if (FIREBASE_ON){
+    if(!dataReady) return;
+    try{
+      const ref = fb.doc(db,"league","altinkupa");
+      await fb.setDoc(ref, { koSlotOverrides: { [key]: code } }, { merge:true });
+    }catch(e){ console.error(e); }
+  } else { await persistLocal(); }
+}
+
 function setSync(cls,txt){
   const el = document.getElementById("syncState");
   el.className = "sync-state " + cls;
@@ -855,6 +1050,16 @@ function totals(){
       if(sc!=null) played++;
       if(sc===3){pts+=3;exact++;} else if(sc===1){pts+=1;outcome++;}
     });
+    // eleme turu (KO) maçlarının puanları
+    KO_MATCHES.forEach(m=>{
+      const res=state.koResults[m.id];
+      if(!res) return;
+      const e=state.koPredictions[p] && state.koPredictions[p][m.id];
+      const pred = e ? e.s : null;
+      const sc=koPointsFor(pred,res);
+      if(sc!=null) played++;
+      if(sc===3){pts+=3;exact++;} else if(sc===1){pts+=1;outcome++;}
+    });
     return {p,pts,exact,outcome,played};
   }).sort((a,b)=> b.pts-a.pts || b.exact-a.exact || a.p.localeCompare(b.p,"tr"));
 }
@@ -870,7 +1075,7 @@ function tryLogin(){
   currentUser=found;
   document.getElementById("login").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
-  renderSession(); renderGroups(); renderLadder(); renderMyStats(); renderCountdown(); renderArchive();
+  renderSession(); renderGroups(); renderLadder(); renderMyStats(); renderCountdown(); renderArchive(); renderKnockout();
 }
 function logout(){
   currentUser=null;
@@ -982,6 +1187,8 @@ function isOpen(mId){
   return !isFinished(mId);
 }
 
+const groupResultEdit = {}; // transient: yönetici "Kilidi aç" demeden skor giremesin
+
 function buildCard(day, mm){
   const me=currentUser.name;
   const m={id:mm.id, g:mm.g+" Grubu", venue:mm.v, h:team(mm.h), a:team(mm.a)};
@@ -1011,17 +1218,23 @@ function buildCard(day, mm){
     ? `<span class="score"><span class="fl">${m.h.f}</span> ${res[0]}–${res[1]} <span class="fl">${m.a.f}</span></span>`
     : `<span class="score"><span class="fl">${m.h.f}</span> ${m.h.n} – ${m.a.n} <span class="fl">${m.a.f}</span></span>`;
 
-  const othersHTML=PLAYERS.filter(p=>p!==me).map(p=>{
-    const e=state.predictions[p][m.id];
-    const has=e&&e.locked&&e.s[0]!=null;
-    const txt=has?`${e.s[0]}–${e.s[1]}`:"·";
-    let cls="";
-    if(res&&has){
-      const sc=pointsFor(e.s,res);
-      cls = sc===3?"hit":(sc===1?"close":"");
-    }
-    return `<span class="pill ${cls} ${has?'':'waiting'}"><b>${p}</b>${txt}</span>`;
-  }).join("");
+  // Diğer tahminler: maç bitene (yönetici sonucu kilitleyene) kadar tamamen gizli
+  let othersHTML;
+  if(!finished){
+    othersHTML = `<div class="others-hidden">🙈 Diğer tahminler, yönetici sonucu kilitleyince görünecek.</div>`;
+  } else {
+    othersHTML = `<div class="others"><span>Diğer tahminler:</span>` + PLAYERS.filter(p=>p!==me).map(p=>{
+      const e=state.predictions[p][m.id];
+      const has=e&&e.locked&&e.s[0]!=null;
+      const txt=has?`${e.s[0]}–${e.s[1]}`:"·";
+      let cls="";
+      if(has){
+        const sc=pointsFor(e.s,res);
+        cls = sc===3?"hit":(sc===1?"close":"");
+      }
+      return `<span class="pill ${cls} ${has?'':'waiting'}"><b>${p}</b>${txt}</span>`;
+    }).join("") + `</div>`;
+  }
 
   let myPts="";
   if(res){
@@ -1044,18 +1257,38 @@ function buildCard(day, mm){
   }
 
   const resultBadge=res?`<div class="result-done"><span>⏱ Maç bitti: ${res[0]}–${res[1]}</span></div>`:"";
-  const adminHTML=currentUser.admin?`
-    <div class="result-admin">
-      <div class="label">Maç sonucunu işle (yönetici)</div>
-      <div class="result-inner">
-        <input type="number" min="0" max="20" inputmode="numeric" data-res="h" value="${res?res[0]:''}" placeholder="–">
-        <span class="vs">·</span>
-        <input type="number" min="0" max="20" inputmode="numeric" data-res="a" value="${res?res[1]:''}" placeholder="–">
-        <button class="result-save">Sonucu kaydet</button>
-        ${res?'<button class="result-clear">Sonucu sil</button>':''}
-      </div>
-      <div class="result-msg"></div>
-    </div>`:"";
+
+  // Yönetici paneli: sonuç varsa ve düzenleme modunda DEĞİLSE -> kilitli görünüm
+  let adminHTML="";
+  if(currentUser.admin){
+    const editing = !res || groupResultEdit[m.id];
+    if(res && !editing){
+      adminHTML = `
+        <div class="result-admin">
+          <div class="label">Maç sonucu (yönetici)</div>
+          <div class="result-inner">
+            <span class="ko-locked-score">${res[0]} · ${res[1]}</span>
+          </div>
+          <div style="display:flex;justify-content:center;gap:10px;margin-top:12px;">
+            <button class="btn-unlock-result">🔓 Kilidi aç</button>
+            <button class="result-clear">Sonucu sil</button>
+          </div>
+        </div>`;
+    } else {
+      adminHTML = `
+        <div class="result-admin">
+          <div class="label">Maç sonucunu işle (yönetici)</div>
+          <div class="result-inner">
+            <input type="number" min="0" max="20" inputmode="numeric" data-res="h" value="${res?res[0]:''}" placeholder="–">
+            <span class="vs">·</span>
+            <input type="number" min="0" max="20" inputmode="numeric" data-res="a" value="${res?res[1]:''}" placeholder="–">
+            <button class="result-save">Sonuçları kilitle</button>
+            ${res?'<button class="result-clear">Sonucu sil</button>':''}
+          </div>
+          <div class="result-msg"></div>
+        </div>`;
+    }
+  }
 
   card.innerHTML=`
     <div class="card-toggle">
@@ -1074,7 +1307,7 @@ function buildCard(day, mm){
       </div>
       ${actions}
       ${resultBadge}${myPts}
-      <div class="others"><span>Diğer tahminler:</span>${othersHTML}</div>
+      ${othersHTML}
       ${adminHTML}
     </div>`;
 
@@ -1121,12 +1354,16 @@ function buildCard(day, mm){
     if(h===""||a===""){ msg.textContent="İki skoru da gir, sonra kaydet."; msg.style.color="var(--bad)"; return; }
     const score=[Math.max(0,parseInt(h,10)||0),Math.max(0,parseInt(a,10)||0)];
     state.results[m.id]=score;
+    groupResultEdit[m.id]=false;
     delete userToggled[m.id];
     saveOneResult(m.id, score); renderGroups(); renderLadder(); renderMyStats(); renderCountdown();
   };
+  const ub=card.querySelector(".btn-unlock-result");
+  if(ub) ub.onclick=()=>{ groupResultEdit[m.id]=true; renderGroups(); };
   const rc=card.querySelector(".result-clear");
   if(rc) rc.onclick=()=>{
     delete state.results[m.id];
+    delete groupResultEdit[m.id];
     delete userToggled[m.id];
     deleteOneResult(m.id); renderGroups(); renderLadder(); renderMyStats(); renderCountdown();
   };
@@ -1156,6 +1393,260 @@ function renderArchive(){
       box.appendChild(c);
     });
   });
+}
+
+/* ================= ELEME TURU (BRACKET) RENDER ================= */
+let koActiveRound = 'r32';
+
+function renderKoRoundTabs(){
+  const box=document.getElementById("koRoundTabs");
+  if(!box) return;
+  box.innerHTML = KO_ROUNDS.map(r=>{
+    const finished = r.matches.every(m=>state.koResults[m.id]);
+    const tag = finished ? " ✓" : "";
+    return `<button class="${r.id===koActiveRound?'active':''}" data-round="${r.id}">${r.name}${tag}</button>`;
+  }).join("");
+  box.querySelectorAll("button").forEach(btn=>{
+    btn.onclick=()=>{ koActiveRound=btn.dataset.round; renderKnockout(); };
+  });
+}
+
+function koTeamOptions(selected){
+  const codes = Object.keys(NM).sort((a,b)=>NM[a].localeCompare(NM[b],"tr"));
+  return `<option value="">— takım seç —</option>` + codes.map(c=>
+    `<option value="${c}" ${c===selected?'selected':''}>${F[c]} ${NM[c]}</option>`).join("");
+}
+
+const koResultEdit = {}; // transient: yönetici "Kilidi aç" demeden skor giremesin
+
+function buildKoCard(m){
+  const me=currentUser.name;
+  const hSlot=koSlotLabel(m.home,m.id,'h');
+  const aSlot=koSlotLabel(m.away,m.id,'a');
+  const res=state.koResults[m.id];
+  const finished=!!res;
+  const bothKnown = hSlot.known && aSlot.known;
+
+  const card=document.createElement("div");
+  card.className="ko-match"+(finished?" finished":"");
+
+  // takım gösterimi (biliniyorsa flag+isim, değilse TBD + yönetici için seçim kutusu)
+  function teamBlock(slot, side){
+    if(slot.known){
+      return `<div class="ko-team"><span class="flag">${slot.f}</span><span class="name">${slot.n}</span></div>`;
+    }
+    const slotDef = side==='h' ? m.home : m.away;
+    let adminPick="";
+    if(currentUser.admin && slotDef.type==='tbd'){
+      adminPick=`<div class="ko-tbd-input"><select data-side="${side}" class="ko-assign">${koTeamOptions("")}</select></div>`;
+    }
+    return `<div class="ko-team"><span class="flag">🏳️</span><span class="name tbd">${slot.label}</span>${adminPick}</div>`;
+  }
+
+  let body;
+  if(!bothKnown){
+    body = `
+      <div class="ko-teams">
+        ${teamBlock(hSlot,'h')}
+        <span class="vs">·</span>
+        ${teamBlock(aSlot,'a')}
+      </div>
+      <div class="ko-pending-note">Bu eşleşmedeki takım(lar) henüz netleşmedi. Netleşince tahmin açılacak.</div>`;
+  } else {
+    const entry = (state.koPredictions[me] && state.koPredictions[me][m.id]) || {s:[null,null],locked:false};
+    const my = entry.s;
+    const editLocked = entry.locked || finished;
+
+    // Diğer tahminler: maç bitene (yönetici sonucu kilitleyene) kadar tamamen gizli
+    let othersHTML;
+    if(!finished){
+      othersHTML = `<div class="others-hidden">🙈 Diğer tahminler, yönetici sonucu kilitleyince görünecek.</div>`;
+    } else {
+      othersHTML = `<div class="others"><span>Diğer tahminler:</span>` + PLAYERS.filter(p=>p!==me).map(p=>{
+        const e = state.koPredictions[p] && state.koPredictions[p][m.id];
+        const has = e && e.locked && e.s[0]!=null;
+        const txt = has ? `${e.s[0]}–${e.s[1]}` : "·";
+        let cls="";
+        if(has){
+          const sc=koPointsFor(e.s,res);
+          cls = sc===3?"hit":(sc===1?"close":"");
+        }
+        return `<span class="pill ${cls} ${has?'':'waiting'}"><b>${p}</b>${txt}</span>`;
+      }).join("") + `</div>`;
+    }
+
+    let myPts="";
+    if(res){
+      const sc=koPointsFor(my,res);
+      if(sc===3) myPts=`<div class="mypoints p3">★ Tam skor! +3 puan</div>`;
+      else if(sc===1) myPts=`<div class="mypoints p1">✓ Doğru sonuç · +1 puan</div>`;
+      else if(sc===0) myPts=`<div class="mypoints p0">✕ Tutmadı · 0 puan</div>`;
+    }
+
+    let actions;
+    if(finished){
+      const winName = res.winner==='home' ? hSlot.n : aSlot.n;
+      actions = `<div class="actions"><span class="lock-badge">🏁 Maç bitti — tahminler kilitli</span></div>
+                 <div class="ko-advance">➜ ${winName} bir sonraki tura yükseldi</div>`;
+    } else if(entry.locked){
+      actions = `<div class="actions"><span class="lock-badge">🔒 Tahmin kilitli</span><button class="btn-unlock">🔓 Kilidi aç</button></div>`;
+    } else {
+      actions = `<div class="actions"><button class="btn-save">Kaydet ve kilitle</button></div>`;
+    }
+
+    const resultBadge = res ? `<div class="result-done"><span>⏱ Maç bitti: ${res.h}–${res.a}</span></div>` : "";
+
+    // Yönetici paneli: sonuç varsa ve düzenleme modunda DEĞİLSE -> kilitli görünüm
+    let adminHTML="";
+    if(currentUser.admin){
+      const editing = !res || koResultEdit[m.id];
+      if(res && !editing){
+        const winName = res.winner==='home' ? hSlot.n : aSlot.n;
+        adminHTML = `
+          <div class="result-admin">
+            <div class="label">Maç sonucu (yönetici)</div>
+            <div class="result-inner"><span class="ko-locked-score">${res.h} · ${res.a}</span></div>
+            <div class="ko-advance" style="margin-top:8px;">Kazanan: ${winName}</div>
+            <div style="display:flex;justify-content:center;gap:10px;margin-top:12px;">
+              <button class="btn-unlock-result">🔓 Kilidi aç</button>
+              <button class="result-clear">Sonucu sil</button>
+            </div>
+          </div>`;
+      } else {
+        const hSel = res ? (res.winner==='home') : null;
+        const aSel = res ? (res.winner==='away') : null;
+        adminHTML = `
+          <div class="result-admin">
+            <div class="label">Maç sonucunu işle (yönetici)</div>
+            <div class="result-inner">
+              <input type="number" min="0" max="20" inputmode="numeric" data-res="h" value="${res?res.h:''}" placeholder="–">
+              <span class="vs">·</span>
+              <input type="number" min="0" max="20" inputmode="numeric" data-res="a" value="${res?res.a:''}" placeholder="–">
+            </div>
+            <div class="ko-winner-pick">
+              <button class="ko-pick ${hSel?'sel':''}" data-side="home">${hSlot.f} ${hSlot.n} kazandı</button>
+              <button class="ko-pick ${aSel?'sel':''}" data-side="away">${aSlot.f} ${aSlot.n} kazandı</button>
+            </div>
+            <div style="display:flex;justify-content:center;gap:10px;margin-top:12px;">
+              <button class="result-save">Sonuçları kilitle</button>
+              ${res?'<button class="result-clear">Sonucu sil</button>':''}
+            </div>
+            <div class="result-msg"></div>
+          </div>`;
+      }
+    }
+
+    body = `
+      <div class="ko-teams">
+        <div class="ko-team"><span class="flag">${hSlot.f}</span><span class="name">${hSlot.n}</span></div>
+        <div class="board">${digitHTML("h",my[0],editLocked)}<span class="vs">·</span>${digitHTML("a",my[1],editLocked)}</div>
+        <div class="ko-team"><span class="flag">${aSlot.f}</span><span class="name">${aSlot.n}</span></div>
+      </div>
+      ${actions}
+      ${resultBadge}${myPts}
+      ${othersHTML}
+      ${adminHTML}`;
+  }
+
+  card.innerHTML = `
+    <div class="ko-meta"><span class="group">${m.roundName}</span><span>${m.date} · ${m.venue}</span></div>
+    ${body}`;
+
+  // yönetici: TBD slotuna takım atama
+  card.querySelectorAll(".ko-assign").forEach(sel=>{
+    sel.onchange=()=>{
+      if(!sel.value) return;
+      const key = m.id+"_"+sel.dataset.side;
+      state.koSlotOverrides[key]=sel.value;
+      saveKoSlotOverride(key, sel.value);
+      renderKnockout();
+    };
+  });
+
+  if(bothKnown){
+    const me2=currentUser.name;
+    card.querySelectorAll(".digit button").forEach(btn=>{
+      btn.onclick=()=>{
+        const entry=(state.koPredictions[me2] && state.koPredictions[me2][m.id]) || {s:[null,null],locked:false};
+        if(entry.locked || res) return;
+        const cur=entry.s;
+        const i=btn.dataset.side==="h"?0:1;
+        const d=parseInt(btn.dataset.d,10);
+        let v=cur[i]==null?0:cur[i]+d; v=Math.max(0,Math.min(20,v));
+        const next=[cur[0]==null?0:cur[0],cur[1]==null?0:cur[1]]; next[i]=v;
+        if(!state.koPredictions[me2]) state.koPredictions[me2]={};
+        state.koPredictions[me2][m.id]={s:next,locked:false};
+        renderKnockout();
+      };
+    });
+    const saveBtn=card.querySelector(".btn-save");
+    if(saveBtn) saveBtn.onclick=()=>{
+      const cur=(state.koPredictions[me2] && state.koPredictions[me2][m.id]) || {s:[0,0]};
+      const s = cur.s[0]!=null ? cur.s : [0,0];
+      const entry={s,locked:true};
+      if(!state.koPredictions[me2]) state.koPredictions[me2]={};
+      state.koPredictions[me2][m.id]=entry;
+      saveOneKoPrediction(me2, m.id, entry);
+      renderKnockout(); renderLadder(); renderMyStats();
+    };
+    const unlockBtn=card.querySelector(".btn-unlock");
+    if(unlockBtn) unlockBtn.onclick=()=>{
+      const cur=state.koPredictions[me2][m.id];
+      const entry={s:cur.s,locked:false};
+      state.koPredictions[me2][m.id]=entry;
+      saveOneKoPrediction(me2, m.id, entry);
+      renderKnockout();
+    };
+
+    if(currentUser.admin){
+      const ubr=card.querySelector(".btn-unlock-result");
+      if(ubr) ubr.onclick=()=>{ koResultEdit[m.id]=true; renderKnockout(); };
+
+      let pickedWinner = res ? res.winner : null;
+      card.querySelectorAll(".ko-pick").forEach(btn=>{
+        btn.onclick=()=>{
+          pickedWinner = btn.dataset.side;
+          card.querySelectorAll(".ko-pick").forEach(b=>b.classList.toggle("sel", b===btn));
+        };
+      });
+      const rs=card.querySelector(".result-save");
+      if(rs) rs.onclick=()=>{
+        const h=card.querySelector('input[data-res="h"]').value;
+        const a=card.querySelector('input[data-res="a"]').value;
+        const msg=card.querySelector(".result-msg");
+        if(h===""||a===""){ msg.textContent="İki skoru da gir."; msg.style.color="var(--bad)"; return; }
+        const hh=Math.max(0,parseInt(h,10)||0), aa=Math.max(0,parseInt(a,10)||0);
+        let winner=pickedWinner;
+        if(!winner){
+          if(hh>aa) winner='home'; else if(aa>hh) winner='away';
+          else { msg.textContent="Berabere bitti — penaltı/uzatmada kim kazandı, lütfen seç."; msg.style.color="var(--bad)"; return; }
+        }
+        const score={h:hh,a:aa,winner};
+        state.koResults[m.id]=score;
+        koResultEdit[m.id]=false;
+        saveOneKoResult(m.id, score);
+        renderKoRoundTabs(); renderKnockout(); renderLadder(); renderMyStats();
+      };
+      const rc=card.querySelector(".result-clear");
+      if(rc) rc.onclick=()=>{
+        delete state.koResults[m.id];
+        delete koResultEdit[m.id];
+        deleteOneKoResult(m.id);
+        renderKoRoundTabs(); renderKnockout(); renderLadder(); renderMyStats();
+      };
+    }
+  }
+
+  return card;
+}
+
+function renderKnockout(){
+  renderKoRoundTabs();
+  const box=document.getElementById("koList");
+  if(!box) return;
+  box.innerHTML="";
+  const round = KO_ROUNDS.find(r=>r.id===koActiveRound) || KO_ROUNDS[0];
+  round.matches.forEach(rm=>{ box.appendChild(buildKoCard(KO_BY_ID[rm.id])); });
 }
 
 function renderGroups(){
@@ -1198,11 +1689,23 @@ let openDetail = null;
 function playerBreakdown(p){
   const rows=[];
   MATCHES.forEach(m=>{
+    if(ARCHIVED.has(m.id)) return;
     const res=state.results[m.id];
     if(!res) return;
     const e=state.predictions[p][m.id];
     const pred = e ? e.s : null;
     rows.push({m, pred, res, sc:pointsFor(pred,res)});
+  });
+  KO_MATCHES.forEach(m=>{
+    const res=state.koResults[m.id];
+    if(!res) return;
+    const e=state.koPredictions[p] && state.koPredictions[p][m.id];
+    const pred = e ? e.s : null;
+    const hh=koSlotLabel(m.home,m.id,'h'), aa=koSlotLabel(m.away,m.id,'a');
+    rows.push({
+      m:{h:{f:hh.f||'🏳️',n:hh.code||hh.label||'?'}, a:{f:aa.f||'🏳️',n:aa.code||aa.label||'?'}},
+      pred, res:[res.h,res.a], sc:koPointsFor(pred,res)
+    });
   });
   return rows;
 }
